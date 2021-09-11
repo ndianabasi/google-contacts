@@ -12,11 +12,7 @@
           class="q-mx-md"
         />
 
-        <q-toolbar-title
-          v-if="$q.screen.gt.sm"
-          shrink
-          class="row items-center no-wrap"
-        >
+        <q-toolbar-title shrink class="row items-center no-wrap">
           <q-btn round unelevated color="primary" icon="person" />
           <span class="q-ml-sm">Contacts</span>
         </q-toolbar-title>
@@ -92,13 +88,26 @@
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
+      :show-if-above="$q.screen.gt.sm"
       bordered
       :width="300"
       :breakpoint="500"
+      :behavior="$q.screen.lt.md ? 'mobile' : 'default'"
       @click="leftDrawerOpen = false"
     >
       <q-scroll-area class="fit">
+        <q-toolbar
+          v-if="$q.screen.lt.md"
+          class="GPL__toolbar flex-center"
+          style="height: 64px"
+        >
+          <q-toolbar-title shrink class="row items-center no-wrap">
+            <img
+              src="https://cdn.quasar.dev/img/layout-gallery/logo-google.svg"
+            />
+            <span class="q-ml-sm q-mb-xs">Contacts</span>
+          </q-toolbar-title>
+        </q-toolbar>
         <q-list padding>
           <q-item
             v-for="link in links1"
@@ -145,22 +154,6 @@
               <q-item-label>{{ link.text }}</q-item-label>
             </q-item-section>
           </q-item>
-
-          <q-separator class="q-my-md" />
-
-          <q-item
-            clickable
-            class="GPL__drawer-item GPL__drawer-item--storage fixed-bottom"
-          >
-            <q-item-section avatar>
-              <q-icon name="cloud" />
-            </q-item-section>
-            <q-item-section top>
-              <q-item-label>Storage</q-item-label>
-              <q-linear-progress :value="storage" class="q-my-sm" />
-              <q-item-label caption>2.6 GB of 15 GB</q-item-label>
-            </q-item-section>
-          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -192,25 +185,23 @@ export default {
       storage,
 
       links1: [
-        { icon: "photo", text: "Photos" },
-        { icon: "photo_album", text: "Albums" },
-        { icon: "assistant", text: "Assistant" },
-        { icon: "people", text: "Sharing" },
-        { icon: "book", text: "Photo books" },
+        { icon: "person", text: "Contacts" },
+        { icon: "groups", text: "Groups" },
+        { icon: "history", text: "Frequently contacted" },
+        { icon: "auto_fix_high", text: "Merge and fix" },
       ],
-      links2: [{ icon: "delete", text: "Trash" }],
+      links2: [
+        { icon: "archive", text: "Other contacts" },
+        { icon: "delete", text: "Bin" },
+      ],
       links3: [
-        { icon: "settings", text: "Settings" },
-        { icon: "help", text: "Help & Feedback" },
-        { icon: "get_app", text: "App Downloads" },
+        { icon: "cloud_upload", text: "Import" },
+        { icon: "cloud_download", text: "Export" },
+        { icon: "print", text: "Print" },
       ],
       createMenu: [
-        { icon: "photo_album", text: "Album" },
-        { icon: "people", text: "Shared Album" },
-        { icon: "movie", text: "Movie" },
-        { icon: "library_books", text: "Animation" },
-        { icon: "dashboard", text: "Collage" },
-        { icon: "book", text: "Photo book" },
+        { icon: "person_add", text: "Contact" },
+        { icon: "group_add", text: "Group" },
       ],
 
       toggleLeftDrawer,
