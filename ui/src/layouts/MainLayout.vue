@@ -2,31 +2,131 @@
   <q-layout view="hHh Lpr lff" class="bg-grey-1">
     <q-header class="bg-white text-grey-8" height-hint="64">
       <q-toolbar class="GPL__toolbar" style="height: 64px">
-        <q-btn
-          flat
-          dense
-          round
-          @click="toggleLeftDrawer"
-          aria-label="Menu"
-          icon="menu"
-          class="q-mx-md"
-        />
+        <template v-if="showHeaderToolbarTitle">
+          <q-btn
+            flat
+            dense
+            round
+            @click="toggleLeftDrawer"
+            aria-label="Menu"
+            icon="menu"
+            class="q-ml-md"
+          />
 
-        <q-toolbar-title shrink class="row items-center no-wrap">
-          <q-btn round unelevated color="primary" icon="person" />
-          <span class="q-ml-sm">Contacts</span>
-        </q-toolbar-title>
+          <q-toolbar-title shrink class="row items-center no-wrap">
+            <q-btn
+              v-if="$q.screen.gt.xs"
+              round
+              unelevated
+              color="primary"
+              icon="person"
+            />
+            <span
+              :class="[
+                $q.screen.gt.xs && 'q-ml-sm',
+                $q.screen.lt.xs && 'hidden',
+              ]"
+              >Contacts</span
+            >
+          </q-toolbar-title>
 
-        <q-space />
+          <q-space v-if="!$q.screen.lt.sm" />
 
+          <q-input
+            v-if="!$q.screen.lt.sm"
+            class="GPL__toolbar-input"
+            dense
+            standout="bg-primary"
+            v-model="search"
+            placeholder="Search"
+          >
+            <template v-slot:prepend>
+              <q-icon
+                v-if="search"
+                name="clear"
+                class="cursor-pointer"
+                @click="search = ''"
+              />
+            </template>
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+
+          <q-space />
+
+          <q-btn
+            v-if="$q.screen.lt.sm"
+            @click="toggleMobileSearchInput"
+            flat
+            round
+            ripple
+            icon="search"
+            class="q-ml-sm q-mr-md"
+          />
+
+          <q-btn
+            round
+            ripple
+            dense
+            no-wrap
+            color="primary"
+            icon="add"
+            class="q-ml-sm q-ml-md-lg q-mr-md q-px-md"
+          >
+            <q-menu anchor="top end" self="top end">
+              <q-list class="text-grey-8" style="min-width: 100px">
+                <q-item aria-hidden="true">
+                  <q-item-section
+                    class="text-uppercase text-grey-7"
+                    style="font-size: 0.7rem"
+                    >Create New</q-item-section
+                  >
+                </q-item>
+                <q-item
+                  v-for="menu in createMenu"
+                  :key="menu.text"
+                  clickable
+                  v-close-popup
+                  aria-hidden="true"
+                >
+                  <q-item-section avatar>
+                    <q-icon :name="menu.icon" />
+                  </q-item-section>
+                  <q-item-section>{{ menu.text }}</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+
+          <div class="q-gutter-sm row items-center no-wrap">
+            <q-btn round flat>
+              <q-avatar size="26px">
+                <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+              </q-avatar>
+              <q-tooltip>Account</q-tooltip>
+            </q-btn>
+          </div>
+        </template>
         <q-input
+          v-else
           class="GPL__toolbar-input"
+          :style="{ width: '100vw' }"
           dense
           standout="bg-primary"
           v-model="search"
           placeholder="Search"
         >
           <template v-slot:prepend>
+            <q-btn
+              round
+              flat
+              ripple
+              icon="arrow_back"
+              @click="toggleMobileSearchInput"
+            />
+          </template>
+          <template v-slot:append>
             <q-icon v-if="search === ''" name="search" />
             <q-icon
               v-else
@@ -36,53 +136,6 @@
             />
           </template>
         </q-input>
-
-        <q-btn
-          v-if="$q.screen.gt.xs"
-          flat
-          dense
-          no-wrap
-          color="primary"
-          icon="add"
-          no-caps
-          label="Create"
-          class="q-ml-sm q-px-md"
-        >
-          <q-menu anchor="top end" self="top end">
-            <q-list class="text-grey-8" style="min-width: 100px">
-              <q-item aria-hidden="true">
-                <q-item-section
-                  class="text-uppercase text-grey-7"
-                  style="font-size: 0.7rem"
-                  >Create New</q-item-section
-                >
-              </q-item>
-              <q-item
-                v-for="menu in createMenu"
-                :key="menu.text"
-                clickable
-                v-close-popup
-                aria-hidden="true"
-              >
-                <q-item-section avatar>
-                  <q-icon :name="menu.icon" />
-                </q-item-section>
-                <q-item-section>{{ menu.text }}</q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
-
-        <q-space />
-
-        <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round flat>
-            <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
-            <q-tooltip>Account</q-tooltip>
-          </q-btn>
-        </div>
       </q-toolbar>
     </q-header>
 
@@ -165,24 +218,39 @@
 </template>
 
 <script>
-import { ref } from "vue";
+/* eslint-disable operator-linebreak */
+/* eslint-disable implicit-arrow-linebreak */
+import { ref, computed } from "vue";
+import { useQuasar } from "quasar";
 
 export default {
   name: "GoogleContactsLayout",
 
   setup() {
+    const $q = useQuasar();
+
     const leftDrawerOpen = ref(false);
     const search = ref("");
-    const storage = ref(0.26);
+    const isMobileSearchVisible = ref(false);
+    const showHeaderToolbarTitle = computed(
+      () =>
+        !isMobileSearchVisible.value ||
+        (isMobileSearchVisible.value && !$q.screen.lt.sm)
+    );
 
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
 
+    function toggleMobileSearchInput() {
+      if ($q.screen.lt.sm) {
+        isMobileSearchVisible.value = !isMobileSearchVisible.value;
+      }
+    }
+
     return {
       leftDrawerOpen,
       search,
-      storage,
 
       links1: [
         { icon: "person", text: "Contacts" },
@@ -205,6 +273,8 @@ export default {
       ],
 
       toggleLeftDrawer,
+      toggleMobileSearchInput,
+      showHeaderToolbarTitle,
     };
   },
 };
