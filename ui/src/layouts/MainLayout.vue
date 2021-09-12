@@ -13,7 +13,11 @@
             class="q-ml-md"
           />
 
-          <q-toolbar-title shrink class="row items-center no-wrap">
+          <q-toolbar-title
+            @click="$router.push({ name: 'home' })"
+            shrink
+            class="row items-center no-wrap"
+          >
             <q-btn
               v-if="$q.screen.gt.xs"
               round
@@ -212,6 +216,14 @@
     </q-drawer>
 
     <q-page-container class="GPL__page-container">
+      <q-toolbar
+        v-if="$route.name !== 'home'"
+        class="text-primary q-mt-sm sticky-top"
+      >
+        <q-toolbar-title class="text-center">
+          {{ $route.meta.title }}
+        </q-toolbar-title>
+      </q-toolbar>
       <router-view />
     </q-page-container>
   </q-layout>
