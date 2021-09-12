@@ -3,21 +3,17 @@
     <div class="q-pa-lg col-xs-12 col-sm-9 col-md-9 col-lg-6 col-xl-6">
       <q-form @submit="submitForm" class="q-gutter-md">
         <q-input
-          v-for="({ label, required, icon, inputType }, key) in form"
+          v-for="({ label, icon, inputType }, key) in form"
           :key="key"
+          :for="`${key}_${inputType}_input`"
           bottom-slots
           v-model="form[key].value"
           :label="label"
           :dense="dense"
-          lazy-rules
-          :rules="[
-            (val) => {
-              if (!required) return true;
-              else return (val && val.length > 0) || `${label} is required`;
-            },
-          ]"
           :class="!icon && 'q-pl-lg'"
           :type="inputType || 'text'"
+          :autogrow="inputType === 'textarea'"
+          :autofocus="key === 'firstName'"
         >
           <template v-slot:before>
             <q-icon v-if="icon" :name="icon" />
@@ -69,7 +65,12 @@ export default defineComponent({
         icon: "person",
       },
       surname: { label: "Surname", required: true, value: "" },
-      company: { label: "Company", required: false, value: "" },
+      company: {
+        label: "Company",
+        required: false,
+        value: "",
+        icon: "business",
+      },
       jobTitle: { label: "Job Title", required: false, value: "" },
       email1: {
         label: "Email 1",
