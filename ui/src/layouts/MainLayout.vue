@@ -247,7 +247,7 @@ export default {
     const showHeaderToolbarTitle = computed(
       () =>
         !isMobileSearchVisible.value ||
-        (isMobileSearchVisible.value && !$q.screen.lt.sm)
+        (isMobileSearchVisible.value && !$q.screen.lt.sm),
     );
 
     function toggleLeftDrawer() {
