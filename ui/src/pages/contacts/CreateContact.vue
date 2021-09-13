@@ -33,15 +33,6 @@
               class="cursor-pointer"
             />
           </template>
-
-          <template v-slot:error>
-            <q-icon
-              v-if="form[key].value"
-              name="close"
-              @click="form[key].value = ''"
-              class="cursor-pointer"
-            />
-          </template>
         </q-input>
 
         <div class="q-mt-xl">

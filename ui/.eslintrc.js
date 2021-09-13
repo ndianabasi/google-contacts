@@ -88,7 +88,7 @@ module.exports = {
     "object-curly-newline": "off",
     "comma-dangle": "off",
     "no-useless-escape": "off",
-    "linebreak-style": ["error", "windows"],
+    "linebreak-style": ["error", "unix"],
 
     // TypeScript
     quotes: ["warn", "double", { avoidEscape: true }],
