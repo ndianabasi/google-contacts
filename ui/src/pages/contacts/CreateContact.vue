@@ -16,12 +16,25 @@
           :autofocus="key === 'firstName'"
           :aria-autocomplete="autocomplete"
           :autocomplete="autocomplete"
+          :error="v$?.[key]?.$error"
+          :error-message="
+            v$?.[key]?.$errors?.map((error) => error.$message).join('\n')
+          "
         >
           <template v-slot:before>
             <q-icon v-if="icon" :name="icon" />
           </template>
 
           <template v-slot:after>
+            <q-icon
+              v-if="form[key].value"
+              name="close"
+              @click="form[key].value = ''"
+              class="cursor-pointer"
+            />
+          </template>
+
+          <template v-slot:error>
             <q-icon
               v-if="form[key].value"
               name="close"
@@ -45,19 +58,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { defineComponent, reactive, computed } from "vue";
 import { useQuasar } from "quasar";
+import useVuelidate from "@vuelidate/core";
+import { required, email, url, helpers, integer } from "@vuelidate/validators";
 import { FormInterface } from "../../types";
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const phoneNumberValidator = helpers.regex(
+  /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/
+);
 
 export default defineComponent({
   name: "CreateContact",
   components: {},
   setup() {
     const $q = useQuasar();
-
-    const submitForm = function () {
-      console.log("Form submitted");
-    };
 
     const form: FormInterface = reactive({
       firstName: {
@@ -174,10 +191,93 @@ export default defineComponent({
       },
     });
 
+    const rules = computed(() => ({
+      firstName: {
+        value: {
+          required: helpers.withMessage("First Name is required.", required),
+        },
+      },
+      surname: {
+        value: {
+          required: helpers.withMessage("Surname is required.", required),
+        },
+      },
+      email1: {
+        value: {
+          email: helpers.withMessage("Email is invalid", email),
+          required: helpers.withMessage("Email 1 is required.", required),
+        },
+      },
+      email2: {
+        value: {
+          email: helpers.withMessage("Email is invalid", email),
+        },
+      },
+      phoneNumber1: {
+        value: {
+          phoneNumber: helpers.withMessage(
+            "Provide phone number is invalid",
+            phoneNumberValidator
+          ),
+          required: helpers.withMessage(
+            "Phone Number 1 is required.",
+            required
+          ),
+        },
+      },
+      phoneNumber2: {
+        value: {
+          phoneNumber: helpers.withMessage(
+            "Provide phone number is invalid",
+            phoneNumberValidator
+          ),
+        },
+      },
+      postCode: {
+        value: {
+          integer: helpers.withMessage(
+            "The postal code must be positive integers.",
+            integer
+          ),
+        },
+      },
+      website: {
+        value: {
+          url: helpers.withMessage(
+            "The value for `website` is invalid. Make sure it contains the protocol: `http` or `https`.",
+            url
+          ),
+        },
+      },
+    }));
+
+    const v$ = useVuelidate(rules, form, { $lazy: true, $autoDirty: true });
+
+    const submitForm = function () {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      v$?.value?.$touch();
+      if (v$?.value?.$error) {
+        const numberOfErrors = v$?.value?.$errors?.length;
+
+        $q.notify({
+          message: `${numberOfErrors} validation error${
+            numberOfErrors > 1 ? "s" : ""
+          } exist${numberOfErrors > 1 ? "" : "s"}. Please scroll to check.`,
+          type: "negative",
+        });
+      } else {
+        $q.notify({
+          message: "Form submitted",
+          type: "positive",
+        });
+      }
+    };
+
     return {
       form,
       dense: $q.screen.lt.sm,
       submitForm,
+      v$,
     };
   },
 });

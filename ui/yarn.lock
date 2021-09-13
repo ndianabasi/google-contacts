@@ -1548,6 +1548,20 @@
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.2.4.tgz#ba2a09527afff27b28d08f921b4a597e9504ca7a"
   integrity sha512-j2j1MRmjalVKr3YBTxl/BClSIc8UQ8NnPpLYclxerK65JIowI4O7n8O8lElveEtEoHxy1d7BelPUDI0Q4bumqg==
 
+"@vuelidate/core@^2.0.0-alpha.25":
+  version "2.0.0-alpha.25"
+  resolved "https://registry.yarnpkg.com/@vuelidate/core/-/core-2.0.0-alpha.25.tgz#079cf6b5ab6aa27f64bff8ce87e9b5274df6095b"
+  integrity sha512-8gDZsESacXw++G45yDLB5Fw+tc9fTbRvkL3XFaAhA9Wia6mPp/nS+iLPRrXhwPex5OPqdjre44ZSvMCu7fgpCA==
+  dependencies:
+    vue-demi "^0.11.3"
+
+"@vuelidate/validators@^2.0.0-alpha.21":
+  version "2.0.0-alpha.21"
+  resolved "https://registry.yarnpkg.com/@vuelidate/validators/-/validators-2.0.0-alpha.21.tgz#bc1e92865aa9ce213b4ba0acc26fd78bf27dd4ac"
+  integrity sha512-Ch+dW2hSWxAv+DcCEbpMVB58rylrCRxrGQMvL1gJKtq2SdrIrvw+IfgGL9VtxLx8U8gqlDiqy7M4Ycu59rUSnA==
+  dependencies:
+    vue-demi "^0.11.3"
+
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.11.1.tgz#2bfd767eae1a6996f432ff7e8d7fc75679c0b6a7"
@@ -6792,6 +6806,11 @@ vendors@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/vendors/-/vendors-1.0.4.tgz#e2b800a53e7a29b93506c3cf41100d16c4c4ad8e"
   integrity sha512-/juG65kTL4Cy2su4P8HjtkTxk6VmJDiOPBufWniqQ6wknac6jNiXS9vU+hO3wgusiyqWlzTbVHi0dyJqRONg3w==
+
+vue-demi@^0.11.3:
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.11.4.tgz#6101992fe4724cf5634018a16e953f3052e94e2a"
+  integrity sha512-/3xFwzSykLW2HiiLie43a+FFgNOcokbBJ+fzvFXd0r2T8MYohqvphUyDQ8lbAwzQ3Dlcrb1c9ykifGkhSIAk6A==
 
 vue-eslint-parser@^7.10.0:
   version "7.11.0"
