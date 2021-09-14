@@ -61,13 +61,6 @@ export interface TableRow {
   field: string | ((row: TableRow) => string) | unknown;
   required?: boolean; // Use of `required` is important to avoid breaking QTable
   format?: unknown;
-  filterable?: boolean;
-  /**
-   * Used to indicate whether column is visible as a column or not
-   * irrespective of whether it is `required` or not.
-   * This could be used for columns meant to appear for filtering only
-   */
-  visibleAsColumn?: boolean;
 }
 
 export interface VirtualScrollCtx {
