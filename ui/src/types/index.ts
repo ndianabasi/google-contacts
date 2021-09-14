@@ -27,3 +27,52 @@ export interface FormItem {
 export interface FormInterface {
   [index: string]: FormItem;
 }
+
+export interface Contact {
+  id: string;
+  firstName: string;
+  surname: string;
+  company?: string | null;
+  jobTitle?: string | null;
+  email1: string;
+  email2?: string | null | undefined;
+  phoneNumber1: string;
+  phoneNumber2?: string | null | undefined;
+  country?: string | null | undefined;
+  streetAddressLine1?: string | null | undefined;
+  streetAddressLine2?: string | null | undefined;
+  city?: string | null | undefined;
+  state?: string | null | undefined;
+  birthday?: string | null | undefined;
+  website?: string | null | undefined;
+  notes?: string | null | undefined;
+}
+
+type SortStringToBooleanFn = (arg1: string, arg2: string) => boolean;
+type SortStringToNumberFn = (arg1: string, arg2: string) => number;
+type SortNumberFn = (arg1: number, arg2: number) => number;
+
+export interface TableRow {
+  name: string;
+  label: string;
+  align?: string;
+  sortable?: boolean;
+  sort?: SortStringToBooleanFn | SortNumberFn | SortStringToNumberFn;
+  field: string | ((row: TableRow) => string) | unknown;
+  required?: boolean; // Use of `required` is important to avoid breaking QTable
+  format?: unknown;
+  filterable?: boolean;
+  /**
+   * Used to indicate whether column is visible as a column or not
+   * irrespective of whether it is `required` or not.
+   * This could be used for columns meant to appear for filtering only
+   */
+  visibleAsColumn?: boolean;
+}
+
+export interface VirtualScrollCtx {
+  to: number;
+  ref: {
+    refresh: () => void;
+  };
+}

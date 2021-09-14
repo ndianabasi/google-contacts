@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh Lpr lff" class="bg-grey-1">
+  <q-layout view="hHh Lpr lff">
     <q-header class="bg-white text-grey-8" height-hint="64">
       <q-toolbar class="GPL__toolbar" style="height: 64px">
         <template v-if="showHeaderToolbarTitle">
@@ -247,7 +247,7 @@ export default {
     const showHeaderToolbarTitle = computed(
       () =>
         !isMobileSearchVisible.value ||
-        (isMobileSearchVisible.value && !$q.screen.lt.sm),
+        (isMobileSearchVisible.value && !$q.screen.lt.sm)
     );
 
     function toggleLeftDrawer() {
