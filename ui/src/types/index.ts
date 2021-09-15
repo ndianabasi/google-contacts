@@ -32,8 +32,8 @@ export interface Contact {
   id: string;
   firstName: string;
   surname: string;
-  company?: string | null;
-  jobTitle?: string | null;
+  company?: string | null | undefined;
+  jobTitle?: string | null | undefined;
   email1: string;
   email2?: string | null | undefined;
   phoneNumber1: string;
