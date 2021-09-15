@@ -3,10 +3,10 @@ import { Contact, TableColumn } from "src/types";
 const columns: Array<TableColumn> = [
   {
     name: "profilePicture",
-    required: true,
     label: "Profile Picture",
     align: "center",
     field: "profilePicture",
+    sortable: false,
   },
   {
     name: "firstName",

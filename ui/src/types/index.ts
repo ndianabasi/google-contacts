@@ -48,18 +48,13 @@ export interface Contact {
   notes?: string | null | undefined;
 }
 
-type SortStringToBooleanFn = (arg1: string, arg2: string) => boolean;
-type SortStringToNumberFn = (arg1: string, arg2: string) => number;
-type SortNumberFn = (arg1: number, arg2: number) => number;
-
 export interface TableColumn {
   name: string;
   label: string;
   align?: string;
   sortable?: boolean;
-  sort?: SortStringToBooleanFn | SortNumberFn | SortStringToNumberFn;
   field: string | ((row: TableColumn) => unknown) | unknown;
-  required?: boolean; // Use of `required` is important to avoid breaking QTable
+  required?: boolean;
   format?: unknown;
 }
 
