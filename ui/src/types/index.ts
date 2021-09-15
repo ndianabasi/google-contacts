@@ -58,7 +58,7 @@ export interface TableColumn {
   align?: string;
   sortable?: boolean;
   sort?: SortStringToBooleanFn | SortNumberFn | SortStringToNumberFn;
-  field: string | ((row: TableColumn) => string) | unknown;
+  field: string | ((row: TableColumn) => unknown) | unknown;
   required?: boolean; // Use of `required` is important to avoid breaking QTable
   format?: unknown;
 }
