@@ -52,13 +52,13 @@ type SortStringToBooleanFn = (arg1: string, arg2: string) => boolean;
 type SortStringToNumberFn = (arg1: string, arg2: string) => number;
 type SortNumberFn = (arg1: number, arg2: number) => number;
 
-export interface TableRow {
+export interface TableColumn {
   name: string;
   label: string;
   align?: string;
   sortable?: boolean;
   sort?: SortStringToBooleanFn | SortNumberFn | SortStringToNumberFn;
-  field: string | ((row: TableRow) => string) | unknown;
+  field: string | ((row: TableColumn) => string) | unknown;
   required?: boolean; // Use of `required` is important to avoid breaking QTable
   format?: unknown;
 }

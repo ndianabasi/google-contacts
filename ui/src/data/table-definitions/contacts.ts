@@ -1,6 +1,6 @@
-import { Contact, TableRow } from "src/types";
+import { Contact, TableColumn } from "src/types";
 
-const columns: Array<TableRow> = [
+const columns: Array<TableColumn> = [
   {
     name: "profilePicture",
     required: true,
