@@ -59,6 +59,7 @@ export default defineComponent({
   setup() {
     const nextPage = ref(2);
     const loading = ref(false);
+    const selected = ref([]);
 
     const rows = computed(() =>
       contacts.slice(0, pageSize * (nextPage.value - 1))
@@ -85,7 +86,7 @@ export default defineComponent({
     };
 
     return {
-      selected: ref([]),
+      selected,
       columns,
       rows,
 
