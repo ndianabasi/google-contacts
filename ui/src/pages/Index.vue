@@ -13,18 +13,18 @@
         :pagination="pagination"
         :rows-per-page-options="[0]"
         binary-state-sort
-        @virtual-scroll="onScroll"
         selection="multiple"
         flat
         class="sticky-table-header"
+        @virtual-scroll="onScroll"
       >
-        <template v-slot:top-row>
+        <template #top-row>
           <q-tr>
             <q-td colspan="100%"> Starred Contacts (xx) </q-td>
           </q-tr>
         </template>
 
-        <template v-slot:body="props">
+        <template #body="props">
           <q-tr :props="props">
             <q-td auto-width>
               <q-checkbox v-model="props.selected" />

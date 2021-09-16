@@ -7,16 +7,18 @@ module.exports = {
 
   // https://eslint.vuejs.org/user-guide/#how-to-use-custom-parser
   // Must use parserOptions instead of "parser" to allow vue-eslint-parser to keep working
-  // `parser: 'vue-eslint-parser'` is already included with any 'plugin:vue/**' config and should be omitted
+  //parser: "vue-eslint-parser", // is already included
+  // with any 'plugin:vue/**' config and should be omitted
   parserOptions: {
     // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/parser#configuration
     // https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#eslint
     // Needed to make the parser take into account 'vue' files
+    files: ["*.ts"], // Your TypeScript files extension
     extraFileExtensions: [".vue"],
     parser: "@typescript-eslint/parser",
     project: resolve(__dirname, "./tsconfig.json"),
     tsconfigRootDir: __dirname,
-    ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
+    ecmaVersion: "latest", // Allows for the parsing of modern ECMAScript features
     sourceType: "module", // Allows for the use of imports
   },
 
@@ -35,14 +37,15 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     // consider disabling this class of rules if linting takes too long
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "prettier",
 
     // Uncomment any of the lines below to choose desired strictness,
     // but leave only one uncommented!
     // See https://eslint.vuejs.org/rules/#available-rules
-    "plugin:vue/vue3-essential", // Priority A: Essential (Error Prevention)
+    //"plugin:vue/vue3-essential", // Priority A: Essential (Error Prevention)
     // 'plugin:vue/vue3-strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
-    // 'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
+    "plugin:vue/vue3-recommended", // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
+
+    "prettier",
   ],
 
   plugins: [
@@ -95,5 +98,8 @@ module.exports = {
 
     // allow debugger during development only
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
+
+    // vue-eslint-plugin
+    "vue/no-v-model-argument": "off",
   },
 };
