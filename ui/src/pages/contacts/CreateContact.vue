@@ -1,13 +1,13 @@
 <template>
   <q-page class="row justify-center q-mt-lg">
     <div class="q-pa-lg col-xs-12 col-sm-9 col-md-9 col-lg-6 col-xl-6">
-      <q-form @submit="submitForm" class="q-gutter-md">
+      <q-form class="q-gutter-md" @submit="submitForm">
         <q-input
           v-for="({ label, icon, inputType, autocomplete }, key) in form"
           :key="key"
+          v-model="form[key].value"
           :for="`${key}_${inputType || 'text'}_input`"
           bottom-slots
-          v-model="form[key].value"
           :label="label"
           :dense="dense"
           :class="!icon && 'q-pl-lg'"
@@ -21,16 +21,16 @@
             v$?.[key]?.$errors?.map((error) => error.$message).join('\n')
           "
         >
-          <template v-slot:before>
+          <template #before>
             <q-icon v-if="icon" :name="icon" />
           </template>
 
-          <template v-slot:after>
+          <template #after>
             <q-icon
               v-if="form[key].value"
               name="close"
-              @click="form[key].value = ''"
               class="cursor-pointer"
+              @click="form[key].value = ''"
             />
           </template>
         </q-input>

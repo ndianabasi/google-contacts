@@ -7,16 +7,16 @@
             flat
             dense
             round
-            @click="toggleLeftDrawer"
             aria-label="Menu"
             icon="menu"
             class="q-ml-md"
+            @click="toggleLeftDrawer"
           />
 
           <q-toolbar-title
-            @click="$router.push({ name: 'home' })"
             shrink
             class="row items-center no-wrap"
+            @click="$router.push({ name: 'home' })"
           >
             <q-btn
               v-if="$q.screen.gt.xs"
@@ -38,13 +38,13 @@
 
           <q-input
             v-if="!$q.screen.lt.sm"
+            v-model="search"
             class="GPL__toolbar-input"
             dense
             standout="bg-primary"
-            v-model="search"
             placeholder="Search"
           >
-            <template v-slot:prepend>
+            <template #prepend>
               <q-icon
                 v-if="search"
                 name="clear"
@@ -52,7 +52,7 @@
                 @click="search = ''"
               />
             </template>
-            <template v-slot:append>
+            <template #append>
               <q-icon name="search" />
             </template>
           </q-input>
@@ -61,12 +61,12 @@
 
           <q-btn
             v-if="$q.screen.lt.sm"
-            @click="toggleMobileSearchInput"
             flat
             round
             ripple
             icon="search"
             class="q-ml-sm q-mr-md"
+            @click="toggleMobileSearchInput"
           />
 
           <q-btn
@@ -90,8 +90,9 @@
                 <q-item
                   v-for="menu in createMenu"
                   :key="menu.text"
-                  clickable
                   v-close-popup
+                  :to="menu.to"
+                  clickable
                   aria-hidden="true"
                 >
                   <q-item-section avatar>
@@ -114,14 +115,14 @@
         </template>
         <q-input
           v-else
+          v-model="search"
           class="GPL__toolbar-input"
           :style="{ width: '100vw' }"
           dense
           standout="bg-primary"
-          v-model="search"
           placeholder="Search"
         >
-          <template v-slot:prepend>
+          <template #prepend>
             <q-btn
               round
               flat
@@ -130,7 +131,7 @@
               @click="toggleMobileSearchInput"
             />
           </template>
-          <template v-slot:append>
+          <template #append>
             <q-icon v-if="search === ''" name="search" />
             <q-icon
               v-else
@@ -167,8 +168,9 @@
         </q-toolbar>
         <q-list padding>
           <q-item
-            v-for="link in links1"
+            v-for="link in drawerMenuGroupOne"
             :key="link.text"
+            :to="link.to"
             clickable
             class="GPL__drawer-item"
           >
@@ -183,8 +185,9 @@
           <q-separator class="q-my-md" />
 
           <q-item
-            v-for="link in links2"
+            v-for="link in drawerMenuGroupTwo"
             :key="link.text"
+            :to="link.to"
             clickable
             class="GPL__drawer-item"
           >
@@ -199,8 +202,9 @@
           <q-separator class="q-my-md" />
 
           <q-item
-            v-for="link in links3"
+            v-for="link in drawerMenuGroupThree"
             :key="link.text"
+            :to="link.to"
             clickable
             class="GPL__drawer-item"
           >
@@ -234,6 +238,12 @@
 /* eslint-disable implicit-arrow-linebreak */
 import { ref, computed } from "vue";
 import { useQuasar } from "quasar";
+import {
+  drawerMenuGroupOne,
+  drawerMenuGroupTwo,
+  drawerMenuGroupThree,
+  createMenu,
+} from "../data/useMenu";
 
 export default {
   name: "GoogleContactsLayout",
@@ -263,27 +273,10 @@ export default {
     return {
       leftDrawerOpen,
       search,
-
-      links1: [
-        { icon: "person", text: "Contacts" },
-        { icon: "groups", text: "Groups" },
-        { icon: "history", text: "Frequently contacted" },
-        { icon: "auto_fix_high", text: "Merge and fix" },
-      ],
-      links2: [
-        { icon: "archive", text: "Other contacts" },
-        { icon: "delete", text: "Bin" },
-      ],
-      links3: [
-        { icon: "cloud_upload", text: "Import" },
-        { icon: "cloud_download", text: "Export" },
-        { icon: "print", text: "Print" },
-      ],
-      createMenu: [
-        { icon: "person_add", text: "Contact" },
-        { icon: "group_add", text: "Group" },
-      ],
-
+      drawerMenuGroupOne,
+      drawerMenuGroupTwo,
+      drawerMenuGroupThree,
+      createMenu,
       toggleLeftDrawer,
       toggleMobileSearchInput,
       showHeaderToolbarTitle,
