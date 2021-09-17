@@ -64,3 +64,9 @@ export interface VirtualScrollCtx {
     refresh: () => void;
   };
 }
+
+export interface Menu {
+  icon: string;
+  text: string;
+  to?: string | { name: string; params?: { [index: string]: string | number } };
+}
