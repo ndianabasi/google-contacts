@@ -79,8 +79,7 @@
                 <q-avatar
                   color="primary"
                   @click.stop.prevent="handleAvatarClick(props)"
-                >
-                  <q-icon name="check" color="white" />
+                  ><q-icon name="check" color="white" />
                 </q-avatar>
               </transition>
 
