@@ -7,6 +7,7 @@ const columns: Array<TableColumn> = [
     align: "center",
     field: "profilePicture",
     sortable: false,
+    required: false,
   },
   {
     name: "firstName",
@@ -14,6 +15,7 @@ const columns: Array<TableColumn> = [
     label: "First Name",
     field: "firstName",
     sortable: true,
+    required: true,
   },
   {
     name: "surname",
@@ -21,6 +23,7 @@ const columns: Array<TableColumn> = [
     label: "Surname",
     field: "surname",
     sortable: true,
+    required: true,
   },
   {
     name: "email1",
@@ -28,6 +31,7 @@ const columns: Array<TableColumn> = [
     label: "Email 1",
     field: "email1",
     sortable: true,
+    required: true,
   },
   {
     name: "phoneNumber1",
@@ -35,6 +39,7 @@ const columns: Array<TableColumn> = [
     label: "Phone Number 1",
     field: "phoneNumber1",
     sortable: true,
+    required: true,
   },
   {
     name: "jobTitleAndCompany",
@@ -52,6 +57,7 @@ const columns: Array<TableColumn> = [
         : "";
     },
     sortable: false,
+    required: true,
   },
 ];
 
