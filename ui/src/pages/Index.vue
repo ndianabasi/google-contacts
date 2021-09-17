@@ -1,13 +1,13 @@
 <template>
   <q-page class="row justify-center justify-evenly">
     <div class="q-px-md full-width">
-      <template v-if="selected.length">
+      <!-- <template v-if="selected.length">
         <q-toolbar class="text-primary">
           <q-btn flat round dense icon="more_vert" />
           <q-space />
           <span class="text-bold">{{ selected.length }} selected</span>
         </q-toolbar>
-      </template>
+      </template> -->
       <q-table
         v-model:selected="selected"
         :rows="rows"
@@ -29,16 +29,16 @@
       >
         <template #header="props">
           <q-tr>
-            <q-td auto-width>
+            <q-th auto-width>
               <q-checkbox v-model="props.selected" />
-            </q-td>
-            <q-td
+            </q-th>
+            <q-th
               v-for="column in props.cols"
               :key="column.name"
               class="text-center"
             >
               {{ column.label }}
-            </q-td>
+            </q-th>
             <q-td v-if="isHoverable" auto-width>&nbsp;</q-td>
           </q-tr>
         </template>
