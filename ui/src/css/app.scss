@@ -4,14 +4,10 @@ input[type="date"] ~ div.q-field__label {
   margin-top: -0.75rem;
 }
 
-.contacts-row-avatar {
-  /* Styles for touch devices, including Android */
-}
-
 @media (hover: hover) and (pointer: fine) {
   .q-table tbody > tr {
     .q-toolbar {
-      display: hidden !important;
+      display: none !important;
     }
     &:hover {
       .q-toolbar {
