@@ -83,7 +83,16 @@
             >
 
             <template v-for="item in contactData">
-              <q-item v-if="item.text" :key="item.key" v-ripple>
+              <q-item
+                v-if="
+                  (item.text &&
+                    Array.isArray(item.text) &&
+                    !isNullArray(item.text)) ||
+                  typeof item.text === 'string'
+                "
+                :key="item.key"
+                v-ripple
+              >
                 <q-item-section avatar middle>
                   <q-icon
                     :name="item.icon"
@@ -92,23 +101,21 @@
                   />
                 </q-item-section>
 
-                <q-item-section>
-                  <template v-if="item.text && Array.isArray(item.text)">
-                    <q-item-label
-                      v-for="(line, index) in item.text.filter((l) => l)"
-                      :key="'item_line_' + index"
-                      :lines="
-                        line?.clampLines && line?.clampLines !== 'none'
-                          ? line.clampLines
-                          : line?.clampLines && line?.clampLines === 'none'
-                          ? undefined
-                          : 1
-                      "
-                      >{{ line }}</q-item-label
-                    >
-                  </template>
+                <q-item-section v-if="Array.isArray(item.text)">
                   <q-item-label
-                    v-else
+                    v-for="(line, index) in item.text.filter((l) => l)"
+                    :key="'item_line_' + index"
+                    :lines="
+                      line?.clampLines && line?.clampLines !== 'none'
+                        ? line.clampLines
+                        : line?.clampLines && line?.clampLines === 'none'
+                        ? undefined
+                        : 1
+                    "
+                    >{{ line }}</q-item-label
+                  > </q-item-section
+                ><q-item-section v-if="typeof item.text === 'string'">
+                  <q-item-label
                     :lines="
                       item?.clampLines && item?.clampLines !== 'none'
                         ? item.clampLines
@@ -139,6 +146,8 @@
                             ? `mailto:${item.text}`
                             : item.linkAs === 'tel'
                             ? `tel:${item.text}`
+                            : item.linkAs === 'website'
+                            ? item.text
                             : undefined
                         "
                         :style="{
@@ -224,7 +233,7 @@ export default defineComponent({
         side?: string | undefined;
         sideColor?: string | undefined;
         clampLines?: number | "none";
-        linkAs?: "email" | "tel";
+        linkAs?: "email" | "tel" | "website";
       }>
     > = computed(() => [
       {
@@ -275,6 +284,7 @@ export default defineComponent({
         icon: "link",
         text: contact?.website,
         key: "website",
+        linkAs: "website",
       },
       {
         icon: "note",
@@ -284,11 +294,17 @@ export default defineComponent({
       },
     ]);
 
+    const isNullArray = function (array: Array<string | null | undefined>) {
+      return array.every(
+        (item) => !item || item === null || item === undefined
+      );
+    };
+
     onBeforeUnmount(() => {
       void stopContactsEffect();
     });
 
-    return { contact, fullName, contactData, jobDescription };
+    return { contact, fullName, contactData, jobDescription, isNullArray };
   },
 });
 </script>
