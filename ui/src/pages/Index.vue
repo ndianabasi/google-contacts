@@ -54,6 +54,12 @@
             :props="props"
             @mouseover="handleMouseEvents"
             @mouseleave="handleMouseEvents"
+            @click.stop.prevent="
+              $router.push({
+                name: 'view_contact',
+                params: { contactId: props.row.id },
+              })
+            "
           >
             <q-td auto-width>
               <transition

@@ -221,7 +221,7 @@
 
     <q-page-container class="GPL__page-container">
       <q-toolbar
-        v-if="$route.name !== 'home'"
+        v-if="$route.meta.showDefaultTitle"
         class="text-primary q-mt-sm sticky-top"
       >
         <q-toolbar-title class="text-center">
