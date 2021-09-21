@@ -1,13 +1,13 @@
 <template>
   <q-page class="row justify-center justify-evenly">
     <div class="q-px-md full-width">
-      <!-- <template v-if="selected.length">
+      <template v-if="selected.length">
         <q-toolbar class="text-primary">
           <q-btn flat round dense icon="more_vert" />
           <q-space />
           <span class="text-bold">{{ selected.length }} selected</span>
         </q-toolbar>
-      </template> -->
+      </template>
       <q-table
         v-model:selected="selected"
         :rows="rows"
