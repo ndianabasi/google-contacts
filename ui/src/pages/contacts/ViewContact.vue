@@ -102,6 +102,9 @@
                 </q-item-section>
 
                 <q-item-section v-if="Array.isArray(item.text)">
+                  <q-item-label class="text-caption" caption>{{
+                    item.label
+                  }}</q-item-label>
                   <q-item-label
                     v-for="(line, index) in item.text.filter((l) => l)"
                     :key="'item_line_' + index"
@@ -114,11 +117,11 @@
                     "
                     >{{ line }}</q-item-label
                   >
+                </q-item-section>
+                <q-item-section v-if="typeof item.text === 'string'">
                   <q-item-label class="text-caption" caption>{{
                     item.label
                   }}</q-item-label>
-                </q-item-section>
-                <q-item-section v-if="typeof item.text === 'string'">
                   <q-item-label
                     :lines="
                       item?.clampLines && item?.clampLines !== 'none'
@@ -129,9 +132,6 @@
                     "
                     >{{ item.text }}</q-item-label
                   >
-                  <q-item-label class="text-caption" caption>{{
-                    item.label
-                  }}</q-item-label>
                 </q-item-section>
 
                 <q-item-section side>
