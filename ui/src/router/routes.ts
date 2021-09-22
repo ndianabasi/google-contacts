@@ -24,6 +24,13 @@ const routes: RouteRecordRaw[] = [
         meta: { title: "View Contact", showDefaultTitle: false },
         props: true,
       },
+      {
+        path: "contacts/:contactId/edit",
+        name: "edit_contact",
+        component: () => import("pages/contacts/EditContact.vue"),
+        meta: { title: "Edit Contact", showDefaultTitle: true },
+        props: true,
+      },
     ],
   },
 

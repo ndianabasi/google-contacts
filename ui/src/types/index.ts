@@ -1,7 +1,7 @@
 export interface FormItem {
   label: string;
   required: boolean;
-  value: string;
+  value: string | number | null | undefined;
   inputType?: "text" | "number" | "date" | "email" | "url" | "textarea";
   icon?: string;
   autocomplete?:
@@ -28,7 +28,8 @@ export interface FormInterface {
   [index: string]: FormItem;
 }
 
-export interface Contact {
+export interface Contact
+  extends Record<string, string | null | undefined | number> {
   id: string;
   firstName: string;
   surname: string;

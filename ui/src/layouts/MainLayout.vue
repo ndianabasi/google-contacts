@@ -30,6 +30,7 @@
                 $q.screen.gt.xs && 'q-ml-sm',
                 $q.screen.lt.xs && 'hidden',
               ]"
+              style="cursor: pointer"
               >Contacts</span
             >
           </q-toolbar-title>

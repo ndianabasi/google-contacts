@@ -54,7 +54,7 @@
             :props="props"
             @mouseover="handleMouseEvents"
             @mouseleave="handleMouseEvents"
-            @click.stop.prevent="
+            @click.prevent="
               $router.push({
                 name: 'view_contact',
                 params: { contactId: props.row.id },
@@ -102,7 +102,18 @@
             <q-td v-if="isHoverable" auto-width
               ><q-toolbar class="hidden">
                 <q-btn flat round color="yellow" icon="star" />
-                <q-btn flat round color="primary" icon="edit" />
+                <q-btn
+                  flat
+                  round
+                  color="primary"
+                  icon="edit"
+                  @click.stop.prevent="
+                    $router.push({
+                      name: 'edit_contact',
+                      params: { contactId: props.row.id },
+                    })
+                  "
+                />
                 <q-btn flat round color="accent" icon="more_vert" /> </q-toolbar
             ></q-td>
           </q-tr>

@@ -35,13 +35,16 @@
           </template>
         </q-input>
 
-        <div class="q-mt-xl">
-          <q-btn
-            label="Submit"
-            type="submit"
-            color="primary"
-            @click.prevent="submitForm"
-          />
+        <div class="q-mt-xl row justify-center">
+          <div class="col-12 col-md-6 col-lg-6 col-xl-6">
+            <q-btn
+              class="full-width"
+              label="Submit"
+              type="submit"
+              color="primary"
+              @click.prevent="submitForm"
+            />
+          </div>
         </div>
       </q-form>
     </div>
@@ -50,21 +53,41 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { defineComponent, reactive, computed } from "vue";
+import {
+  defineComponent,
+  reactive,
+  computed,
+  PropType,
+  watchEffect,
+  onBeforeUnmount,
+} from "vue";
 import { useQuasar } from "quasar";
 import useVuelidate from "@vuelidate/core";
 import { required, email, url, helpers, integer } from "@vuelidate/validators";
-import { FormInterface } from "../../types";
+import { FormInterface, Contact } from "../../types";
+
+import { contacts } from "../../data/Google_Contacts_Clone_Mock_Data";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const phoneNumberValidator = helpers.regex(
-  /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/
+  /^[+]?[(]{0,1}[0-9]{1,4}[)]?[\(\)-\s\./0-9]*$/
 );
 
 export default defineComponent({
   name: "CreateContact",
-  components: {},
-  setup() {
+  props: {
+    editMode: {
+      type: Boolean as PropType<boolean>,
+      required: true,
+      default: () => false,
+    },
+    contactId: {
+      type: String as PropType<string>,
+      required: false,
+      default: "",
+    },
+  },
+  setup(props) {
     const $q = useQuasar();
 
     const form: FormInterface = reactive({
@@ -244,6 +267,44 @@ export default defineComponent({
 
     const v$ = useVuelidate(rules, form, { $lazy: true, $autoDirty: true });
 
+    let contact: Contact = reactive({
+      id: "",
+      firstName: "",
+      surname: "",
+      email1: "",
+      phoneNumber1: "",
+    });
+
+    const stopContactsEffect = watchEffect(
+      () => {
+        if (!props.contactId || !props.editMode) return;
+
+        const fetchedContact = contacts.filter(
+          (cont) => cont.id === props.contactId
+        );
+        const [fetchedContactObject] = fetchedContact;
+        contact = fetchedContactObject;
+
+        Object.keys(contact).forEach((key) => {
+          if (key !== "id") {
+            form[key].value = contact[key];
+          }
+        });
+      },
+      { flush: "pre" }
+    );
+
+    const submitPayload = computed(() => {
+      const payload = {};
+      Object.keys(form).forEach((key) => {
+        Object.defineProperty(payload, key, {
+          value: form?.[key]?.value,
+          writable: false,
+        });
+      });
+      return payload;
+    });
+
     const submitForm = function () {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       v$?.value?.$touch();
@@ -257,12 +318,18 @@ export default defineComponent({
           type: "negative",
         });
       } else {
+        console.log(submitPayload.value);
+
         $q.notify({
-          message: "Form submitted",
+          message: props.editMode ? "Contact edited" : "Contact created",
           type: "positive",
         });
       }
     };
+
+    onBeforeUnmount(() => {
+      void stopContactsEffect();
+    });
 
     return {
       form,

@@ -71,7 +71,14 @@
           <q-toolbar>
             <q-btn color="primary" flat round icon="star" />
             <q-btn flat round icon="more_vert" />
-            <q-btn color="primary">Edit</q-btn>
+            <q-btn
+              :to="{
+                name: 'edit_contact',
+                params: { contactId: $route.params.contactId },
+              }"
+              color="primary"
+              >Edit</q-btn
+            >
           </q-toolbar>
         </div>
       </div>
@@ -161,7 +168,15 @@
                           textDecoration: 'none',
                           color: 'var(--q-primary)',
                         }"
-                        ><q-btn round flat icon="outbound"></q-btn
+                        ><q-btn
+                          :to="{
+                            name: 'edit_contact',
+                            params: { contactId: $route.params.contactId },
+                          }"
+                          round
+                          flat
+                          icon="outbound"
+                        ></q-btn
                       ></a>
                     </div>
                   </div>
