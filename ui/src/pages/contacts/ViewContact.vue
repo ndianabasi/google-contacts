@@ -113,8 +113,12 @@
                         : 1
                     "
                     >{{ line }}</q-item-label
-                  > </q-item-section
-                ><q-item-section v-if="typeof item.text === 'string'">
+                  >
+                  <q-item-label class="text-caption" caption>{{
+                    item.label
+                  }}</q-item-label>
+                </q-item-section>
+                <q-item-section v-if="typeof item.text === 'string'">
                   <q-item-label
                     :lines="
                       item?.clampLines && item?.clampLines !== 'none'
@@ -125,6 +129,9 @@
                     "
                     >{{ item.text }}</q-item-label
                   >
+                  <q-item-label class="text-caption" caption>{{
+                    item.label
+                  }}</q-item-label>
                 </q-item-section>
 
                 <q-item-section side>
@@ -229,6 +236,7 @@ export default defineComponent({
       Array<{
         icon: string;
         text: string | undefined | null | Array<string | null | undefined>;
+        label: string;
         key: string;
         side?: string | undefined;
         sideColor?: string | undefined;
@@ -239,6 +247,7 @@ export default defineComponent({
       {
         icon: "local_phone",
         text: contact?.phoneNumber1,
+        label: "Phone Number 1",
         side: "mobile",
         sideColor: "purple",
         key: "phoneNumber1",
@@ -247,6 +256,7 @@ export default defineComponent({
       {
         icon: "local_phone",
         text: contact?.phoneNumber2,
+        label: "Phone Number 2",
         side: "home",
         sideColor: "purple",
         key: "phoneNumber2",
@@ -255,18 +265,21 @@ export default defineComponent({
       {
         icon: "email",
         text: contact?.email1,
+        label: "Email 1",
         key: "email1",
         linkAs: "email",
       },
       {
         icon: "email",
         text: contact?.email2,
+        label: "Email 2",
         key: "email2",
         linkAs: "email",
       },
       {
         icon: "calendar_today",
         text: contact?.birthday,
+        label: "Birthday",
         key: "birthday",
       },
       {
@@ -278,17 +291,20 @@ export default defineComponent({
           contact?.state,
           contact?.country,
         ],
+        label: "Address",
         key: "address",
       },
       {
         icon: "link",
         text: contact?.website,
+        label: "Website",
         key: "website",
         linkAs: "website",
       },
       {
         icon: "note",
         text: contact?.notes,
+        label: "Notes",
         key: "notes",
         clampLines: "none",
       },

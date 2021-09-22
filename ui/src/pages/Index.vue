@@ -39,7 +39,7 @@
             >
               {{ column.label }}
             </q-th>
-            <q-td v-if="isHoverable" auto-width>&nbsp;</q-td>
+            <q-td v-if="isHoverable" style="width: 15%">&nbsp;</q-td>
           </q-tr>
         </template>
 
