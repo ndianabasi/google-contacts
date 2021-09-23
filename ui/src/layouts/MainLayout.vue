@@ -225,6 +225,13 @@
         v-if="$route.meta.showDefaultTitle"
         class="text-primary q-mt-sm sticky-top"
       >
+        <q-btn
+          color="primary"
+          flat
+          round
+          icon="arrow_back"
+          @click.prevent="$router.go(-1)"
+        />
         <q-toolbar-title class="text-center">
           {{ $route.meta.title }}
         </q-toolbar-title>
