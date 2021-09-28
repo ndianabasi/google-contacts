@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["linebreak"]
+  "cSpell.words": ["linebreak"],
+  "eslint.workingDirectories": ["api", "ui"]
 }
