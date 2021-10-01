@@ -4,7 +4,7 @@ import Contact from 'App/Models/Contact'
 export default class ContactsController {
   public async index({}: HttpContextContract) {}
 
-  public async create({ request, response }: HttpContextContract) {
+  public async store({ request, response }: HttpContextContract) {
     const payload = request.body()
 
     /**
@@ -69,11 +69,7 @@ export default class ContactsController {
     return response.created(contact)
   }
 
-  public async store({}: HttpContextContract) {}
-
   public async show({}: HttpContextContract) {}
-
-  public async edit({}: HttpContextContract) {}
 
   public async update({}: HttpContextContract) {}
 

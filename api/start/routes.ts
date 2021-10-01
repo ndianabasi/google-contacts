@@ -31,4 +31,4 @@ Route.get('health', async ({ response }) => {
   return report.healthy ? response.ok(report) : response.badRequest(report)
 })
 
-Route.post('/contacts', 'ContactsController.create')
+Route.post('/contacts', 'ContactsController.store')
