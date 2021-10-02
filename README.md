@@ -1,5 +1,7 @@
 # Google Contacts Clone App for `Web Development Learning Series`
 
+![Full-Stack Google Contacts Clone with Adonis.js/Node.js & Quasar/Vue.js Banner](ui/public/images/Google-Contacts-Clone-Series-Cover.jpg)
+
 This repository holds the finished code for the Google Contacts Clone App developed for the Web Development Learning Series: [Complete Full-Stack Google Contacts Clone with Adonis.js/Node.js & Quasar/Vue.js](https://tech.ndianabasi.com/series/google-contacts-clone).
 
 The project is incrementally developed to match each lesson in the series. It has different branches which correspond to different lessons within the series. So, you can easily go back in time and see the evolution of the app by checking out different branches.
