@@ -1,14 +1,14 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Contact from 'App/Models/Contact'
-import UserValidator from 'App/Validators/UserValidator'
 import Logger from '@ioc:Adonis/Core/Logger'
+import ContactValidator from 'App/Validators/ContactValidator'
 
 export default class ContactsController {
   public async index({}: HttpContextContract) {}
 
   public async store({ request, response }: HttpContextContract) {
     try {
-      const payload = await request.validate(UserValidator)
+      const payload = await request.validate(ContactValidator)
 
       /**
        * It is important to destructure and obtain the individual properties
