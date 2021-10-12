@@ -69,12 +69,12 @@ export default class ContactsController {
        */
       await contact.refresh()
 
-      return response.created(contact)
+      return response.created({ message: 'Contact was created', data: contact })
     } catch (error) {
       Logger.error('Error at ContactsController.store:\n%o', error)
 
-      return response.internalServerError({
-        message: 'An internal server error occurred while creating the contact.',
+      return response.status(error?.status ?? 500).json({
+        message: 'An error occurred while creating the contact.',
         error: process.env.NODE_ENV !== 'production' ? error : null,
       })
     }
@@ -82,7 +82,63 @@ export default class ContactsController {
 
   public async show({}: HttpContextContract) {}
 
-  public async update({}: HttpContextContract) {}
+  public async update({ request, response, requestedContact }: HttpContextContract) {
+    try {
+      const payload = await request.validate(ContactValidator)
+
+      const {
+        firstName,
+        surname,
+        company,
+        jobTitle,
+        email1,
+        email2,
+        phoneNumber1,
+        phoneNumber2,
+        country,
+        streetAddressLine1,
+        streetAddressLine2,
+        city,
+        postCode,
+        state,
+        birthday,
+        website,
+        notes,
+      } = payload!
+
+      requestedContact?.merge({
+        firstName,
+        surname,
+        company,
+        jobTitle,
+        email1,
+        email2,
+        phoneNumber1,
+        phoneNumber2,
+        country,
+        streetAddressLine1,
+        streetAddressLine2,
+        city,
+        postCode,
+        state,
+        birthday,
+        website,
+        notes,
+      })
+
+      await requestedContact?.save()
+      await requestedContact?.refresh()
+
+      return response.created({ message: 'Contact was edited', data: requestedContact })
+    } catch (error) {
+      Logger.error('Error at ContactsController.update:\n%o', error)
+
+      return response.status(error?.status ?? 500).json({
+        message: 'An error occurred while updating the contact.',
+        error: process.env.NODE_ENV !== 'production' ? error : null,
+      })
+    }
+  }
 
   public async destroy({}: HttpContextContract) {}
 }

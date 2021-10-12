@@ -4,6 +4,10 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 export default class ContactValidator {
   constructor(protected ctx: HttpContextContract) {}
 
+  public refs = schema.refs({
+    id: this.ctx.params?.id ?? null,
+  })
+
   public schema = schema.create({
     firstName: schema.string({ escape: true, trim: true }, [rules.maxLength(30)]),
     surname: schema.string({ escape: true, trim: true }, [rules.maxLength(30)]),
@@ -11,7 +15,12 @@ export default class ContactValidator {
     jobTitle: schema.string.optional({ escape: true, trim: true }),
     email1: schema.string({ escape: true, trim: true }, [
       rules.email(),
-      rules.unique({ table: 'contacts', column: 'email1', caseInsensitive: false }),
+      rules.unique({
+        table: 'contacts',
+        column: 'email1',
+        caseInsensitive: true,
+        whereNot: this.refs?.id ? { id: this.refs.id } : {},
+      }),
     ]),
     email2: schema.string.optional({ escape: true, trim: true }, [rules.email()]),
     phoneNumber1: schema.string({ escape: true, trim: true }, [rules.maxLength(20)]),
