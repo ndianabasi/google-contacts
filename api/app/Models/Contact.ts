@@ -50,8 +50,8 @@ export default class Contact extends BaseModel {
   @column()
   public state?: string | null | undefined
 
-  @column()
-  public birthday?: string | null | undefined
+  @column.date({ autoCreate: false, autoUpdate: false })
+  public birthday?: DateTime | null | undefined
 
   @column()
   public website?: string | null | undefined
