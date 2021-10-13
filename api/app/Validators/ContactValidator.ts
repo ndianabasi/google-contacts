@@ -29,14 +29,12 @@ export default class ContactValidator {
      * fetch the `Date` object from the Luxon `DateTime` object before saving.
      */
     birthday: schema.date.optional({ format: 'yyyy-MM-dd' }, [rules.before('today')]),
-    website: schema.string.optional(
-      { trim: true } /* [
+    website: schema.string.optional({ trim: true }, [
       rules.url({
         protocols: ['http', 'https'],
         requireHost: true,
       }),
-    ] */
-    ),
+    ]),
     notes: schema.string.optional({ escape: true, trim: true }),
   })
 
