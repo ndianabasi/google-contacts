@@ -33,4 +33,4 @@ Route.get('health', async ({ response }) => {
 
 Route.post('/contacts', 'ContactsController.store')
 
-Route.patch('/contacts/:id', 'ContactsController.update').middleware(['findContact'])
+Route.put('/contacts/:id', 'ContactsController.update').middleware(['findContact'])
