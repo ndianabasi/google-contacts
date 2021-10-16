@@ -75,7 +75,7 @@ export default class ContactsController {
 
       return response.status(error?.status ?? 500).json({
         message: 'An error occurred while creating the contact.',
-        error: process.env.NODE_ENV !== 'production' ? error : null,
+        error: process.env.NODE_ENV !== 'production' || error?.status === 422 ? error : null,
       })
     }
   }
