@@ -1,7 +1,7 @@
 import Contact from 'App/Models/Contact'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class FindRequestedCustomer {
+export default class FindContact {
   public async handle(ctx: HttpContextContract, next: () => Promise<void>) {
     // code for middleware goes here. ABOVE THE NEXT CALL
     const { response, params } = ctx
