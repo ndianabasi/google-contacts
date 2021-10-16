@@ -73,8 +73,8 @@ export default class ContactsController {
     } catch (error) {
       Logger.error('Error at ContactsController.store:\n%o', error)
 
-      return response.internalServerError({
-        message: 'An internal server error occurred while creating the contact.',
+      return response.status(error?.status ?? 500).json({
+        message: 'An error occurred while creating the contact.',
         error: process.env.NODE_ENV !== 'production' ? error : null,
       })
     }
