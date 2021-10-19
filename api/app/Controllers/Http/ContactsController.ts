@@ -80,7 +80,18 @@ export default class ContactsController {
     }
   }
 
-  public async show({}: HttpContextContract) {}
+  public async show({ response, requestedContact }: HttpContextContract) {
+    try {
+      return response.ok({ data: requestedContact })
+    } catch (error) {
+      Logger.error('Error at ContactsController.show:\n%o', error)
+
+      return response.status(error?.status ?? 500).json({
+        message: 'An error occurred while deleting the contact.',
+        error: process.env.NODE_ENV !== 'production' ? error : null,
+      })
+    }
+  }
 
   public async update({ request, response, requestedContact }: HttpContextContract) {
     try {
@@ -140,5 +151,18 @@ export default class ContactsController {
     }
   }
 
-  public async destroy({}: HttpContextContract) {}
+  public async destroy({ response, requestedContact }: HttpContextContract) {
+    try {
+      await requestedContact?.delete()
+
+      return response.created({ message: 'Contact was deleted', data: requestedContact?.id })
+    } catch (error) {
+      Logger.error('Error at ContactsController.destroy:\n%o', error)
+
+      return response.status(error?.status ?? 500).json({
+        message: 'An error occurred while deleting the contact.',
+        error: process.env.NODE_ENV !== 'production' ? error : null,
+      })
+    }
+  }
 }
