@@ -4,7 +4,33 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import ContactValidator from 'App/Validators/ContactValidator'
 
 export default class ContactsController {
-  public async index({}: HttpContextContract) {}
+  public async index({ request, response }: HttpContextContract) {
+    try {
+      const { page, perPage } = request.qs()
+
+      const contacts = await Contact.query()
+        .select([
+          'id',
+          'first_name',
+          'surname',
+          'email1',
+          'phone_number1',
+          'company',
+          'job_title',
+          'profile_picture',
+        ])
+        .paginate(page, perPage)
+
+      return response.ok({ data: contacts })
+    } catch (error) {
+      Logger.error('Error at ContactsController.list:\n%o', error)
+
+      return response.status(error?.status ?? 500).json({
+        message: 'An error occurred while deleting the contact.',
+        error: process.env.NODE_ENV !== 'production' ? error : null,
+      })
+    }
+  }
 
   public async store({ request, response }: HttpContextContract) {
     try {
