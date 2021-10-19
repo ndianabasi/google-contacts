@@ -31,6 +31,8 @@ Route.get('health', async ({ response }) => {
   return report.healthy ? response.ok(report) : response.badRequest(report)
 })
 
+Route.get('/contacts', 'ContactsController.index')
+
 Route.post('/contacts', 'ContactsController.store')
 
 Route.put('/contacts/:id', 'ContactsController.update').middleware(['findContact'])

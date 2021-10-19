@@ -9,16 +9,7 @@ export default class ContactsController {
       const { page, perPage } = request.qs()
 
       const contacts = await Contact.query()
-        .select([
-          'id',
-          'first_name',
-          'surname',
-          'email1',
-          'phone_number1',
-          'company',
-          'job_title',
-          'profile_picture',
-        ])
+        .select(['id', 'first_name', 'surname', 'email1', 'phone_number1', 'company', 'job_title'])
         .paginate(page, perPage)
 
       return response.ok({ data: contacts })
