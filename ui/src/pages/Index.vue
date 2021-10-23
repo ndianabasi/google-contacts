@@ -124,29 +124,73 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, nextTick } from "vue";
-import { VirtualScrollCtx } from "../types";
-import { contacts } from "../data/Google_Contacts_Clone_Mock_Data";
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+import {
+  defineComponent,
+  Ref,
+  ref,
+  computed,
+  nextTick,
+  watchEffect,
+  onBeforeUnmount,
+} from "vue";
+import { Contact, VirtualScrollCtx } from "../types";
 import columns from "../data/table-definitions/contacts";
-
-const pageSize = 50;
-const lastPage = Math.ceil(contacts.length / pageSize);
+import { useStore } from "../store";
 
 export default defineComponent({
   name: "HomePage",
   components: {},
   setup() {
-    const nextPage = ref(2);
-    const loading = ref(false);
+    const store = useStore();
+    const loading = ref(true);
+    const pageSize = 50;
+    const nextPage = ref(1);
+    const tableRef: Ref<VirtualScrollCtx["ref"] | null> = ref(null);
+
+    const contacts = computed(
+      () => store.getters["contacts/contactList"] as Contact[]
+    );
+
+    const totalContacts = computed(
+      () => store.getters["contacts/totalContacts"] as number
+    );
+
+    const stopContactListEffect = watchEffect(async () => {
+      await store
+        .dispatch("contacts/LOAD_CONTACTS", {
+          nextPage: nextPage.value,
+          pageSize,
+        })
+        .then(() => {
+          void nextTick(() => {
+            tableRef.value?.refresh();
+            loading.value = false;
+          });
+        });
+    });
+
+    const lastPage = Math.ceil(totalContacts.value / pageSize);
+
+    const onScroll = function ({ to, ref: ref2 }: VirtualScrollCtx): void {
+      if (
+        loading.value !== true &&
+        nextPage.value < lastPage &&
+        to === nextPage.value * pageSize - 1
+      ) {
+        tableRef.value = ref2;
+        loading.value = true;
+        nextPage.value++;
+      }
+    };
+
     const selected = ref([]);
 
     const visibleColumns = columns
       .filter((column) => column.required)
       .map((column) => column.name);
-
-    const rows = computed(() =>
-      contacts.slice(0, pageSize * (nextPage.value - 1))
-    );
 
     const isHoverable = computed(
       () => window.matchMedia("(hover: hover) and (pointer: fine)")?.matches
@@ -155,26 +199,6 @@ export default defineComponent({
     const isTouchEnabled = computed(
       () => window.matchMedia("(any-pointer: coarse)")?.matches
     );
-
-    const onScroll = function ({ to, ref: ref2 }: VirtualScrollCtx): void {
-      const lastIndex = rows.value.length - 1;
-
-      if (
-        loading.value !== true &&
-        nextPage.value < lastPage &&
-        to === lastIndex
-      ) {
-        loading.value = true;
-
-        setTimeout(() => {
-          nextPage.value++;
-          void nextTick(() => {
-            ref2.refresh();
-            loading.value = false;
-          });
-        }, 500);
-      }
-    };
 
     const handleMouseEvents = function (event: MouseEvent) {
       if (isHoverable.value) {
@@ -203,10 +227,12 @@ export default defineComponent({
       }
     };
 
+    onBeforeUnmount(() => stopContactListEffect());
+
     return {
       selected,
       columns,
-      rows,
+      rows: contacts,
       visibleColumns,
 
       nextPage,
@@ -214,7 +240,8 @@ export default defineComponent({
 
       pagination: {
         rowsPerPage: 0,
-        rowsNumber: rows.value.length,
+        page: nextPage.value,
+        rowsNumber: totalContacts.value,
       },
 
       onScroll,

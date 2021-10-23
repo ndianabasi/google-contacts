@@ -198,18 +198,29 @@
 </template>
 
 <script lang="ts">
+type ContactData = Array<{
+  icon: string;
+  text: string | undefined | null | Array<string | null | undefined>;
+  label: string;
+  key: string;
+  side?: string | undefined;
+  sideColor?: string | undefined;
+  clampLines?: number | "none";
+  linkAs?: "email" | "tel" | "website";
+}>;
+
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   defineComponent,
   watchEffect,
-  reactive,
   PropType,
   onBeforeUnmount,
   computed,
   ComputedRef,
 } from "vue";
-import { contacts } from "../../data/Google_Contacts_Clone_Mock_Data";
+
 import { Contact } from "../../types";
+import { useStore } from "../../store";
 
 export default defineComponent({
   name: "ContactDetails",
@@ -221,47 +232,31 @@ export default defineComponent({
     },
   },
   setup(props) {
-    let contact: Contact | null = reactive({
-      id: "",
-      firstName: "",
-      surname: "",
-      email1: "",
-      phoneNumber1: "",
-    });
+    const store = useStore();
+    const currentContact = computed(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      () => store.getters["contacts/currentContact"] as Contact
+    );
 
     const stopContactsEffect = watchEffect(() => {
-      const fetchedContact = contacts.filter(
-        (cont) => cont.id === props.contactId
-      );
-      const [fetchedContactObject] = fetchedContact;
-      contact = fetchedContactObject;
+      void store.dispatch("contacts/LOAD_CURRENT_CONTACT", props.contactId);
     });
 
     const fullName = computed(
-      () => `${contact?.firstName} ${contact?.surname}`
+      () =>
+        `${currentContact.value?.firstName} ${currentContact.value?.surname}`
     );
 
     const jobDescription = computed(() =>
-      `${contact?.jobTitle ?? ""}${contact?.jobTitle ? " at " : ""}${
-        contact?.company ?? ""
-      }`.trim()
+      `${currentContact.value?.jobTitle ?? ""}${
+        currentContact.value?.jobTitle ? " at " : ""
+      }${currentContact.value?.company ?? ""}`.trim()
     );
 
-    const contactData: ComputedRef<
-      Array<{
-        icon: string;
-        text: string | undefined | null | Array<string | null | undefined>;
-        label: string;
-        key: string;
-        side?: string | undefined;
-        sideColor?: string | undefined;
-        clampLines?: number | "none";
-        linkAs?: "email" | "tel" | "website";
-      }>
-    > = computed(() => [
+    const contactData: ComputedRef<ContactData> = computed(() => [
       {
         icon: "local_phone",
-        text: contact?.phoneNumber1,
+        text: currentContact.value?.phoneNumber1,
         label: "Phone Number 1",
         side: "mobile",
         sideColor: "purple",
@@ -270,7 +265,7 @@ export default defineComponent({
       },
       {
         icon: "local_phone",
-        text: contact?.phoneNumber2,
+        text: currentContact.value?.phoneNumber2,
         label: "Phone Number 2",
         side: "home",
         sideColor: "purple",
@@ -279,46 +274,46 @@ export default defineComponent({
       },
       {
         icon: "email",
-        text: contact?.email1,
+        text: currentContact.value?.email1,
         label: "Email 1",
         key: "email1",
         linkAs: "email",
       },
       {
         icon: "email",
-        text: contact?.email2,
+        text: currentContact.value?.email2,
         label: "Email 2",
         key: "email2",
         linkAs: "email",
       },
       {
         icon: "calendar_today",
-        text: contact?.birthday,
+        text: currentContact.value?.birthday,
         label: "Birthday",
         key: "birthday",
       },
       {
         icon: "location_pin",
         text: [
-          contact?.streetAddressLine1,
-          contact?.streetAddressLine2,
-          contact?.city,
-          contact?.state,
-          contact?.country,
+          currentContact.value?.streetAddressLine1,
+          currentContact.value?.streetAddressLine2,
+          currentContact.value?.city,
+          currentContact.value?.state,
+          currentContact.value?.country,
         ],
         label: "Address",
         key: "address",
       },
       {
         icon: "link",
-        text: contact?.website,
+        text: currentContact.value?.website,
         label: "Website",
         key: "website",
         linkAs: "website",
       },
       {
         icon: "note",
-        text: contact?.notes,
+        text: currentContact.value?.notes,
         label: "Notes",
         key: "notes",
         clampLines: "none",
@@ -335,7 +330,13 @@ export default defineComponent({
       void stopContactsEffect();
     });
 
-    return { contact, fullName, contactData, jobDescription, isNullArray };
+    return {
+      currentContact,
+      fullName,
+      contactData,
+      jobDescription,
+      isNullArray,
+    };
   },
 });
 </script>

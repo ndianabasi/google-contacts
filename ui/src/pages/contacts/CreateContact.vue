@@ -53,6 +53,7 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import {
   defineComponent,
   reactive,
@@ -60,11 +61,13 @@ import {
   PropType,
   watchEffect,
   onBeforeUnmount,
+  nextTick,
 } from "vue";
 import { useQuasar } from "quasar";
 import useVuelidate from "@vuelidate/core";
 import { required, email, url, helpers, integer } from "@vuelidate/validators";
 import { FormInterface, Contact } from "../../types";
+import { useStore } from "../../store";
 
 import { contacts } from "../../data/Google_Contacts_Clone_Mock_Data";
 
@@ -88,6 +91,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const store = useStore();
     const $q = useQuasar();
 
     const form: FormInterface = reactive({
@@ -267,29 +271,26 @@ export default defineComponent({
 
     const v$ = useVuelidate(rules, form, { $lazy: true, $autoDirty: true });
 
-    let contact: Contact = reactive({
-      id: "",
-      firstName: "",
-      surname: "",
-      email1: "",
-      phoneNumber1: "",
-    });
+    const currentContact = computed(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      () => store.getters["contacts/currentContact"] as Contact
+    );
 
     const stopContactsEffect = watchEffect(
-      () => {
+      async () => {
         if (!props.contactId || !props.editMode) return;
 
-        const fetchedContact = contacts.filter(
-          (cont) => cont.id === props.contactId
-        );
-        const [fetchedContactObject] = fetchedContact;
-        contact = fetchedContactObject;
-
-        Object.keys(contact).forEach((key) => {
-          if (key !== "id") {
-            form[key].value = contact[key];
-          }
-        });
+        await store
+          .dispatch("contacts/LOAD_CURRENT_CONTACT", props.contactId)
+          .then(() => {
+            void nextTick(() => {
+              Object.keys(currentContact.value).forEach((key) => {
+                if (key !== "id") {
+                  form[key].value = currentContact.value[key];
+                }
+              });
+            });
+          });
       },
       { flush: "pre" }
     );
@@ -318,8 +319,6 @@ export default defineComponent({
           type: "negative",
         });
       } else {
-        console.log(submitPayload.value);
-
         $q.notify({
           message: props.editMode ? "Contact edited" : "Contact created",
           type: "positive",

@@ -15,6 +15,9 @@ const mutation: MutationTree<ContactStateInterface> = {
   setCurrentContact: (state, payload: Contact) => {
     state.currentContact = payload;
   },
+  setTotalContacts: (state, payload: number) => {
+    state.totalContacts = payload;
+  },
 };
 
 export default mutation;

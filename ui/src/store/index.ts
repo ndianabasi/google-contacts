@@ -4,6 +4,7 @@ import {
   createStore,
   Store as VuexStore,
   useStore as vuexUseStore,
+  createLogger,
 } from "vuex";
 
 import contacts from "./contacts";
@@ -39,6 +40,7 @@ export default store((/* { ssrContext } */) => {
     modules: {
       contacts,
     },
+    plugins: [createLogger({ logActions: true, logMutations: true })],
 
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only

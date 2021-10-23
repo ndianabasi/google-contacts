@@ -1,15 +1,16 @@
 import { Contact } from "src/types";
-import { contacts } from "../../data/Google_Contacts_Clone_Mock_Data";
 
 export interface ContactStateInterface {
   contacts: Array<Contact>;
   currentContact: Contact | null;
+  totalContacts: number | null;
 }
 
 function state(): ContactStateInterface {
   return {
-    contacts,
+    contacts: [],
     currentContact: null,
+    totalContacts: null,
   };
 }
 
