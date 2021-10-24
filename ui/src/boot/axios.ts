@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { boot } from "quasar/wrappers";
 import axios, { AxiosInstance } from "axios";
+import { Notify } from "quasar";
+import { HttpError } from "src/types";
 
 declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
@@ -7,24 +11,120 @@ declare module "@vue/runtime-core" {
   }
 }
 
-// Be careful when using SSR for cross-request state pollution
-// due to creating a Singleton instance here;
-// If any client changes this (global) instance, it might be a
-// good idea to move this instance creation inside of the
-// "export default () => {}" function below (which runs individually
-// for each client)
-const api = axios.create({ baseURL: "https://api.example.com" });
+const api = axios.create();
 
-export default boot(({ app }) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
+export default boot(({ app, store }) => {
+  api.defaults.baseURL = store.getters.getHttpNoAuthOptions.baseURL;
+  api.defaults.timeout = store.getters.getHttpNoAuthOptions.timeout;
 
   app.config.globalProperties.$axios = axios;
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
-  //       so you won't necessarily have to import axios in each vue file
-
   app.config.globalProperties.$api = api;
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
+
+  api.interceptors.response.use(
+    (response) => response,
+    async (error: HttpError) => {
+      console.log(error.response);
+      if (error?.response?.status === 400) {
+        console.log(error.response.data);
+
+        Notify.create({
+          message:
+            error?.response?.data?.message ??
+            (typeof error?.response?.data === "string"
+              ? error?.response?.data
+              : "You made a bad request."),
+          type: "negative",
+          position: "top",
+          progress: true,
+          timeout: 5000,
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+            },
+          ],
+        });
+      } else if (error?.response?.status === 403) {
+        Notify.create({
+          message:
+            "You are not permitted to perform the requested action. Make sure that you are viewing the right company.",
+          type: "negative",
+          position: "top",
+          progress: true,
+          timeout: 5000,
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+            },
+          ],
+        });
+      } else if (error?.response?.status === 422) {
+        // Intercept validation errors
+        const validationErrors = error?.response?.data?.errors;
+        if (Array.isArray(validationErrors) && validationErrors.length) {
+          const errorListItems: string[] = validationErrors.map(
+            (err) => `<li>${err.message}</li>`
+          );
+          Notify.create({
+            message: `<ul>${errorListItems.join("")}</ul>`,
+            html: true,
+            type: "negative",
+            position: "top",
+            progress: true,
+            timeout: 10000,
+            actions: [
+              {
+                label: "Dismiss",
+                color: "white",
+              },
+            ],
+          });
+        }
+      } else if (error?.response?.status === 404) {
+        Notify.create({
+          message:
+            error?.response?.data?.message ??
+            (error?.response?.data as string) ??
+            "Request resource was not found!",
+          type: "negative",
+          position: "top",
+          progress: true,
+          timeout: 5000,
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+            },
+          ],
+        });
+      } else if (
+        error &&
+        error.response &&
+        error.response.status &&
+        error.response.status >= 500
+      ) {
+        Notify.create({
+          message:
+            error?.response?.data?.message ??
+            (error?.response?.data as string) ??
+            "Internal Server Error",
+          type: "negative",
+          position: "top",
+          progress: true,
+          timeout: 5000,
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+            },
+          ],
+        });
+      }
+
+      return Promise.reject(error);
+    }
+  );
 });
 
 export { api };

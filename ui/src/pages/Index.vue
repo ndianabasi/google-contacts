@@ -136,7 +136,7 @@ import {
   watchEffect,
   onBeforeUnmount,
 } from "vue";
-import { Contact, VirtualScrollCtx } from "../types";
+import { Contact, PaginatedData, VirtualScrollCtx } from "../types";
 import columns from "../data/table-definitions/contacts";
 import { useStore } from "../store";
 
@@ -154,9 +154,10 @@ export default defineComponent({
       () => store.getters["contacts/contactList"] as Contact[]
     );
 
-    const totalContacts = computed(
-      () => store.getters["contacts/totalContacts"] as number
-    );
+    const totalContacts = computed({
+      get: () => store.getters["contacts/totalContacts"] as number,
+      set: (value) => value,
+    });
 
     const stopContactListEffect = watchEffect(async () => {
       await store
@@ -164,20 +165,21 @@ export default defineComponent({
           nextPage: nextPage.value,
           pageSize,
         })
-        .then(() => {
+        .then((data: PaginatedData) => {
           void nextTick(() => {
             tableRef.value?.refresh();
             loading.value = false;
+            totalContacts.value = data.meta.total;
           });
         });
     });
 
-    const lastPage = Math.ceil(totalContacts.value / pageSize);
+    const lastPage = computed(() => Math.ceil(totalContacts.value / pageSize));
 
     const onScroll = function ({ to, ref: ref2 }: VirtualScrollCtx): void {
       if (
-        loading.value !== true &&
-        nextPage.value < lastPage &&
+        loading.value === false &&
+        nextPage.value < lastPage.value &&
         to === nextPage.value * pageSize - 1
       ) {
         tableRef.value = ref2;

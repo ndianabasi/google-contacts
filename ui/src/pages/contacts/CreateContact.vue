@@ -69,8 +69,6 @@ import { required, email, url, helpers, integer } from "@vuelidate/validators";
 import { FormInterface, Contact } from "../../types";
 import { useStore } from "../../store";
 
-import { contacts } from "../../data/Google_Contacts_Clone_Mock_Data";
-
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const phoneNumberValidator = helpers.regex(
   /^[+]?[(]{0,1}[0-9]{1,4}[)]?[\(\)-\s\./0-9]*$/
@@ -285,7 +283,7 @@ export default defineComponent({
           .then(() => {
             void nextTick(() => {
               Object.keys(currentContact.value).forEach((key) => {
-                if (key !== "id") {
+                if (["id", "createdAt", "updatedAt"].includes(key) === false) {
                   form[key].value = currentContact.value[key];
                 }
               });

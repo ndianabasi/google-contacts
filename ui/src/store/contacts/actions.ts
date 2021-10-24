@@ -1,47 +1,51 @@
-import { Contact } from "src/types";
+/* eslint-disable no-async-promise-executor */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+import {
+  Contact,
+  HttpResponse,
+  PaginatedContact,
+  PaginatedData,
+  ResponseData,
+} from "src/types";
 import { ActionTree } from "vuex";
 import { StateInterface } from "../index";
 import { ContactStateInterface } from "./state";
-import { contacts as rawContacts } from "../../data/Google_Contacts_Clone_Mock_Data";
+import { api } from "../../boot/axios";
 
 const actions: ActionTree<ContactStateInterface, StateInterface> = {
   LOAD_CURRENT_CONTACT({ commit }, id: Contact["id"]): Promise<Contact> {
-    return new Promise((resolve, reject) => {
-      try {
-        const currentContact = rawContacts
-          .filter((contact) => contact.id === id)
-          .reduce((prev, cur) => {
-            prev = { ...cur };
-            return prev;
-          }, {} as Contact);
+    return new Promise(async (resolve, reject) => {
+      await api
+        .get(`/contacts/${id}`)
+        .then((response: HttpResponse) => {
+          const currentContact = response.data.data as Contact;
+          commit("setCurrentContact", currentContact);
 
-        commit("setCurrentContact", currentContact);
-
-        return resolve(currentContact);
-      } catch (error) {
-        return reject(error);
-      }
+          return resolve(currentContact);
+        })
+        .catch((error) => reject(error));
     });
   },
 
   LOAD_CONTACTS(
     { commit },
     { nextPage, pageSize }: { nextPage: number; pageSize: number }
-  ): Promise<Contact[]> {
-    return new Promise((resolve, reject) => {
-      try {
-        const requestedContacts = [...rawContacts].slice(
-          nextPage <= 1 ? 0 : (nextPage - 1) * pageSize,
-          nextPage <= 1 ? pageSize : nextPage * pageSize
-        );
+  ): Promise<ResponseData["data"]> {
+    return new Promise(async (resolve, reject) => {
+      await api
+        .get("/contacts", { params: { page: nextPage, perPage: pageSize } })
+        .then((response: HttpResponse) => {
+          const paginatedContacts = response.data.data
+            .data as PaginatedContact[];
+          const paginatedMeta = response.data.data
+            .meta as PaginatedData["meta"];
 
-        commit("setContactList", requestedContacts);
-        commit("setTotalContacts", rawContacts.length);
+          commit("setContactList", paginatedContacts);
+          commit("setTotalContacts", paginatedMeta.total);
 
-        return resolve(requestedContacts);
-      } catch (error) {
-        return reject(error);
-      }
+          return resolve(response.data.data);
+        })
+        .catch((error) => reject(error));
     });
   },
 };
