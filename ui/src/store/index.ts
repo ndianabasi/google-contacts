@@ -33,9 +33,7 @@ export interface StateInterface {
 }
 
 export interface RootState {
-  gtmID: string;
   httpTimeout: number;
-  currentYear: number | null;
   message: AlertInterface;
   apiPort: string;
   apiVersion: string | null;
@@ -67,9 +65,7 @@ export default store((/* { ssrContext } */) => {
             : ["staging", "production"].includes(process.env.NODE_ENV)
             ? "https://"
             : "http://",
-        gtmID: `${process.env.NODE_ENV === "production" ? "" : ""}`,
         httpTimeout: process.env.NODE_ENV === "production" ? 60000 : 30000,
-        currentYear: null,
         message: {
           type: "",
           content: "",
@@ -82,8 +78,6 @@ export default store((/* { ssrContext } */) => {
 
     getters: {
       getHttpProtocol: (state) => state.apiProtocol,
-      getCurrentYear: (state) => state.currentYear,
-      getGtmID: (state) => state.gtmID,
       getRootURL: (state) =>
         `${state.apiProtocol}${state.apiHost}:${state.apiPort}`,
       getBaseURL: (state) =>
@@ -91,13 +85,6 @@ export default store((/* { ssrContext } */) => {
           state.apiVersion ? `/${state.apiVersion}` : ""
         }`,
       getHttpTimeout: (state) => state.httpTimeout,
-      getHttpOptions: (state, getters) => ({
-        baseURL: getters.getBaseURL as string,
-        timeout: getters.getHttpTimeout as number,
-        headers: {
-          Authorization: `Bearer ${getters["auth/getToken"] as string}`,
-        },
-      }),
       getHttpNoAuthOptions: (state, getters) => ({
         baseURL: getters.getBaseURL as string,
         timeout: getters.getHttpTimeout as string,
