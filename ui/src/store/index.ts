@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { store } from "quasar/wrappers";
 import { InjectionKey } from "vue";
 import {
@@ -19,9 +20,25 @@ import { ContactStateInterface } from "./contacts/state";
  * with the Store instance.
  */
 
+export interface AlertInterface {
+  type: string;
+  content: string;
+  status: number | null;
+  statusText: string;
+  activity: string;
+}
+
 export interface StateInterface {
-  // Define your own store structure, using submodules if needed
-  contacts: ContactStateInterface;
+  contacts?: ContactStateInterface;
+}
+
+export interface RootState {
+  httpTimeout: number;
+  message: AlertInterface;
+  apiPort: string;
+  apiVersion: string | null;
+  apiProtocol: string;
+  apiHost: string;
 }
 
 // provide typings for `this.$store`
@@ -36,7 +53,45 @@ export const storeKey: InjectionKey<VuexStore<StateInterface>> =
   Symbol("vuex-key");
 
 export default store((/* { ssrContext } */) => {
-  const Store = createStore<StateInterface>({
+  const Store = createStore<StateInterface & RootState>({
+    state() {
+      return {
+        apiHost: process.env.API_HOST ?? "127.0.0.1",
+        apiPort: process.env.API_PORT ?? "3333",
+        apiVersion: null,
+        apiProtocol:
+          window.location.hostname === "localhost"
+            ? "http://"
+            : ["staging", "production"].includes(process.env.NODE_ENV)
+            ? "https://"
+            : "http://",
+        httpTimeout: process.env.NODE_ENV === "production" ? 60000 : 30000,
+        message: {
+          type: "",
+          content: "",
+          status: null,
+          statusText: "",
+          activity: "",
+        },
+      };
+    },
+
+    getters: {
+      getHttpProtocol: (state) => state.apiProtocol,
+      getRootURL: (state) =>
+        `${state.apiProtocol}${state.apiHost}:${state.apiPort}`,
+      getBaseURL: (state) =>
+        `${state.apiProtocol}${state.apiHost}:${state.apiPort}${
+          state.apiVersion ? `/${state.apiVersion}` : ""
+        }`,
+      getHttpTimeout: (state) => state.httpTimeout,
+      getHttpNoAuthOptions: (state, getters) => ({
+        baseURL: getters.getBaseURL as string,
+        timeout: getters.getHttpTimeout as string,
+      }),
+      getMessage: (state) => state.message,
+    },
+
     modules: {
       contacts,
     },
