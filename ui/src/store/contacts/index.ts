@@ -5,7 +5,7 @@ import actions from "./actions";
 import getters from "./getters";
 import mutations from "./mutations";
 
-const exampleModule: Module<ContactStateInterface, StateInterface> = {
+const contactsModule: Module<ContactStateInterface, StateInterface> = {
   namespaced: true,
   actions,
   getters,
@@ -13,4 +13,4 @@ const exampleModule: Module<ContactStateInterface, StateInterface> = {
   state,
 };
 
-export default exampleModule;
+export default contactsModule;
