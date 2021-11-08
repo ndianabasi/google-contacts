@@ -55,14 +55,18 @@ const actions: ActionTree<ContactStateInterface, StateInterface> = {
       editMode,
       payload,
       contactId,
-    }: { editMode: boolean; payload: Contact; contactId?: string }
+    }: { editMode: boolean; payload: FormData; contactId?: string }
   ): Promise<Contact["id"]> {
     console.log(payload);
 
     return new Promise(async (resolve, reject) => {
       if (!editMode) {
         await api
-          .post("/contacts", payload)
+          .post("/contacts", payload, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then((response: HttpResponse) => {
             const newContactId = response.data.data as Contact["id"];
             return resolve(newContactId);
@@ -70,7 +74,11 @@ const actions: ActionTree<ContactStateInterface, StateInterface> = {
           .catch((error) => reject(error));
       } else {
         await api
-          .put(`/contacts/${contactId}`, payload)
+          .put(`/contacts/${contactId}`, payload, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then((response: HttpResponse) => {
             const editContactId = response.data.data as Contact["id"];
             return resolve(editContactId);

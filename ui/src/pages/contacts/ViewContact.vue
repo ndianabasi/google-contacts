@@ -22,7 +22,12 @@
           <div class="row items-center justify-center">
             <div :class="[$q.screen.lt.lg ? 'col-auto' : '']">
               <q-avatar size="200px"
-                ><img src="https://cdn.quasar.dev/img/avatar.png"
+                ><img
+                  :src="
+                    profilePicture
+                      ? profilePicture
+                      : 'https://cdn.quasar.dev/img/avatar.png'
+                  "
               /></q-avatar>
             </div>
             <div :class="{ 'col-auto': true, 'q-mr-auto': $q.screen.gt.sm }">
@@ -198,6 +203,10 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+
 type ContactData = Array<{
   icon: string;
   text: string | undefined | null | Array<string | null | undefined>;
@@ -209,7 +218,6 @@ type ContactData = Array<{
   linkAs?: "email" | "tel" | "website";
 }>;
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   defineComponent,
   watchEffect,
@@ -219,7 +227,7 @@ import {
   ComputedRef,
 } from "vue";
 
-import { Contact } from "../../types";
+import { EditedContactInterface } from "../../types";
 import { useStore } from "../../store";
 
 export default defineComponent({
@@ -235,7 +243,7 @@ export default defineComponent({
     const store = useStore();
     const currentContact = computed(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      () => store.getters["contacts/currentContact"] as Contact
+      () => store.getters["contacts/currentContact"] as EditedContactInterface
     );
 
     const stopContactsEffect = watchEffect(() => {
@@ -252,6 +260,13 @@ export default defineComponent({
         currentContact.value?.jobTitle ? " at " : ""
       }${currentContact.value?.company ?? ""}`.trim()
     );
+
+    const profilePicture = computed(() => {
+      const rootURL = computed(() => store.getters.getRootURL);
+      return currentContact.value?.profilePicture
+        ? `${rootURL.value}${currentContact.value.profilePicture.url}`
+        : "";
+    });
 
     const contactData: ComputedRef<ContactData> = computed(() => [
       {
@@ -336,6 +351,7 @@ export default defineComponent({
       contactData,
       jobDescription,
       isNullArray,
+      profilePicture,
     };
   },
 });

@@ -2,38 +2,69 @@
   <q-page class="row justify-center q-mt-lg">
     <div class="q-pa-lg col-xs-12 col-sm-9 col-md-9 col-lg-6 col-xl-6">
       <q-form class="q-gutter-md" @submit="submitForm">
-        <q-input
+        <template
           v-for="({ label, icon, inputType, autocomplete }, key) in form"
-          :key="key"
-          v-model="form[key].value"
-          :for="`${key}_${inputType || 'text'}_input`"
-          bottom-slots
-          :label="label"
-          :dense="dense"
-          :class="!icon && 'q-pl-lg'"
-          :type="inputType || 'text'"
-          :autogrow="inputType === 'textarea'"
-          :autofocus="key === 'firstName'"
-          :aria-autocomplete="autocomplete"
-          :autocomplete="autocomplete"
-          :error="v$?.[key]?.$error"
-          :error-message="
-            v$?.[key]?.$errors?.map((error) => error.$message).join('\n')
-          "
         >
-          <template #before>
-            <q-icon v-if="icon" :name="icon" />
-          </template>
+          <q-input
+            v-if="inputType !== 'file'"
+            :key="key + '_input'"
+            v-model="form[key].value"
+            :for="`${key}_${inputType || 'text'}_input`"
+            bottom-slots
+            :label="label"
+            :dense="dense"
+            :class="!icon && 'q-pl-lg'"
+            :type="inputType || 'text'"
+            :autogrow="inputType === 'textarea'"
+            :autofocus="key === 'firstName'"
+            :aria-autocomplete="autocomplete"
+            :autocomplete="autocomplete"
+            :error="v$?.[key]?.$error"
+            :error-message="
+              v$?.[key]?.$errors?.map((error) => error.$message).join('\n')
+            "
+          >
+            <template #before>
+              <q-icon v-if="icon" :name="icon" />
+            </template>
 
-          <template #after>
-            <q-icon
-              v-if="form[key].value"
-              name="close"
-              class="cursor-pointer"
-              @click="form[key].value = ''"
-            />
-          </template>
-        </q-input>
+            <template #after>
+              <q-icon
+                v-if="form[key].value"
+                name="close"
+                class="cursor-pointer"
+                @click="form[key].value = ''"
+              />
+            </template>
+          </q-input>
+
+          <q-file
+            v-else
+            :key="key + '_file'"
+            v-model="form[key].value"
+            :for="`${key}_${inputType || 'text'}_input`"
+            bottom-slots
+            :label="label"
+            :dense="dense"
+            :class="!icon && 'q-pl-lg'"
+            accept=".jpg, png, webp, gif"
+            :max-file-size="maxFileSize"
+            @rejected="onRejectProfilePicture"
+          >
+            <template #before>
+              <q-icon v-if="icon" :name="icon" />
+            </template>
+
+            <template #after>
+              <q-icon
+                v-if="form[key].value"
+                name="close"
+                class="cursor-pointer"
+                @click.stop.prevent="form[key].value = null"
+              />
+            </template>
+          </q-file>
+        </template>
 
         <div class="q-mt-xl row justify-center">
           <div class="col-12 col-md-6 col-lg-6 col-xl-6">
@@ -93,8 +124,16 @@ export default defineComponent({
     const store = useStore();
     const $q = useQuasar();
     const router = useRouter();
+    const maxFileSize = 500 * 1024; // 500kb
 
     const form: FormInterface = reactive({
+      profilePicture: {
+        label: "Profile Picture",
+        required: false,
+        value: null,
+        icon: "attach_file",
+        inputType: "file",
+      },
       firstName: {
         label: "First Name",
         required: true,
@@ -285,7 +324,11 @@ export default defineComponent({
           .then(() => {
             void nextTick(() => {
               Object.keys(currentContact.value).forEach((key) => {
-                if (["id", "createdAt", "updatedAt"].includes(key) === false) {
+                if (
+                  ["id", "createdAt", "updatedAt", "profilePicture"].includes(
+                    key
+                  ) === false
+                ) {
                   form[key].value = currentContact.value[key];
                 }
               });
@@ -295,25 +338,45 @@ export default defineComponent({
       { flush: "pre" }
     );
 
-    const submitPayload = computed(() => ({
-      birthday: form.birthday.value,
-      city: form.city.value,
-      company: form.company.value,
-      country: form.country.value,
-      email1: form.email1.value,
-      email2: form.email2.value,
-      firstName: form.firstName.value,
-      jobTitle: form.jobTitle.value,
-      notes: form.notes.value,
-      phoneNumber1: form.phoneNumber1.value,
-      phoneNumber2: form.phoneNumber2.value,
-      postCode: form.postCode.value,
-      state: form.state.value,
-      streetAddressLine1: form.streetAddressLine1.value,
-      streetAddressLine2: form.streetAddressLine2.value,
-      surname: form.surname.value,
-      website: form.website.value,
-    }));
+    const submitPayload = computed(() => {
+      const formData = new FormData();
+
+      formData.append("birthday", (form.birthday.value as string) ?? "");
+      formData.append("city", (form.city.value as string) ?? "");
+      formData.append("company", (form.company.value as string) ?? "");
+      formData.append("country", (form.country.value as string) ?? "");
+      formData.append("email1", (form.email1.value as string) ?? "");
+      formData.append("email2", (form.email2.value as string) ?? "");
+      formData.append("firstName", (form.firstName.value as string) ?? "");
+      formData.append("jobTitle", (form.jobTitle.value as string) ?? "");
+      formData.append("notes", (form.notes.value as string) ?? "");
+      formData.append(
+        "phoneNumber1",
+        (form.phoneNumber1.value as string) ?? ""
+      );
+      formData.append(
+        "phoneNumber2",
+        (form.phoneNumber2.value as string) ?? ""
+      );
+      formData.append("postCode", (form.postCode.value as string) ?? "");
+      formData.append("state", (form.state.value as string) ?? "");
+      formData.append(
+        "streetAddressLine1",
+        (form.streetAddressLine1.value as string) ?? ""
+      );
+      formData.append(
+        "streetAddressLine2",
+        (form.streetAddressLine2.value as string) ?? ""
+      );
+      formData.append("surname", (form.surname.value as string) ?? "");
+      formData.append("website", (form.website.value as string) ?? "");
+      formData.append(
+        "profilePicture",
+        (form.profilePicture.value as File) ?? ""
+      );
+
+      return formData;
+    });
 
     const submitForm = async function () {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -348,6 +411,32 @@ export default defineComponent({
       }
     };
 
+    const onRejectProfilePicture = function (
+      validationError: Array<{
+        failedPropValidation: "accept" | "max-file-size";
+        file: File;
+      }>
+    ) {
+      const messages: string[] = [];
+      if (validationError && validationError.length) {
+        validationError.forEach((error) => {
+          if (error.failedPropValidation === "max-file-size")
+            messages.push("Maximum file size is: 500 kb");
+          if (error.failedPropValidation === "accept")
+            messages.push("The provided file type is now allowed.");
+        });
+
+        if (messages && messages.length) {
+          messages.forEach((message) => {
+            $q.notify({
+              message,
+              type: "negative",
+            });
+          });
+        }
+      }
+    };
+
     onBeforeUnmount(() => {
       void stopContactsEffect();
     });
@@ -357,6 +446,8 @@ export default defineComponent({
       dense: $q.screen.lt.sm,
       submitForm,
       v$,
+      onRejectProfilePicture,
+      maxFileSize,
     };
   },
 });

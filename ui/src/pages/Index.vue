@@ -70,7 +70,11 @@
               >
                 <q-avatar>
                   <img
-                    src="https://cdn.quasar.dev/img/avatar.png"
+                    :src="
+                      props.row.profilePicture
+                        ? formatProfilePicture(props.row.profilePicture)
+                        : 'https://cdn.quasar.dev/img/avatar.png'
+                    "
                     @click.stop.prevent="handleAvatarClick(props)"
                   />
                 </q-avatar>
@@ -136,7 +140,12 @@ import {
   watchEffect,
   onBeforeUnmount,
 } from "vue";
-import { Contact, PaginatedData, VirtualScrollCtx } from "../types";
+import {
+  Contact,
+  EditedContactInterface,
+  PaginatedData,
+  VirtualScrollCtx,
+} from "../types";
 import columns from "../data/table-definitions/contacts";
 import { useStore } from "../store";
 
@@ -149,6 +158,8 @@ export default defineComponent({
     const pageSize = 50;
     const nextPage = ref(1);
     const tableRef: Ref<VirtualScrollCtx["ref"] | null> = ref(null);
+
+    const rootURL = computed(() => store.getters.getRootURL);
 
     const contacts = computed(
       () => store.getters["contacts/contactList"] as Contact[]
@@ -251,6 +262,10 @@ export default defineComponent({
       isHoverable,
       isTouchEnabled,
       handleAvatarClick,
+      formatProfilePicture: (
+        profilePicture: EditedContactInterface["profilePicture"]
+      ): string =>
+        profilePicture ? `${rootURL.value}${profilePicture.url}` : "",
     };
   },
 });

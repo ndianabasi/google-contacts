@@ -4,8 +4,15 @@ import { AxiosError, AxiosResponse } from "axios";
 export interface FormItem {
   label: string;
   required: boolean;
-  value: string | number | null | undefined;
-  inputType?: "text" | "number" | "date" | "email" | "url" | "textarea";
+  value: string | number | File | null | undefined;
+  inputType?:
+    | "text"
+    | "number"
+    | "date"
+    | "email"
+    | "url"
+    | "textarea"
+    | "file";
   icon?: string;
   autocomplete?:
     | "given-name"
@@ -50,6 +57,32 @@ export interface Contact
   birthday?: string | null | undefined;
   website?: string | null | undefined;
   notes?: string | null | undefined;
+}
+
+export interface EditedContactInterface {
+  id: string;
+  firstName: string;
+  surname: string;
+  company?: string | null | undefined;
+  jobTitle?: string | null | undefined;
+  email1: string;
+  email2?: string | null | undefined;
+  phoneNumber1: string;
+  phoneNumber2?: string | null | undefined;
+  country?: string | null | undefined;
+  streetAddressLine1?: string | null | undefined;
+  streetAddressLine2?: string | null | undefined;
+  city?: string | null | undefined;
+  state?: string | null | undefined;
+  birthday?: string | null | undefined;
+  website?: string | null | undefined;
+  notes?: string | null | undefined;
+  profilePicture?: {
+    extname: string;
+    mimeType: string;
+    name: string;
+    url: string;
+  };
 }
 
 export interface TableColumn {
