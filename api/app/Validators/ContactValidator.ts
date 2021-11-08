@@ -13,7 +13,7 @@ export default class ContactValidator {
     surname: schema.string({ escape: true, trim: true }, [rules.maxLength(30)]),
     company: schema.string.optional({ escape: true, trim: true }),
     jobTitle: schema.string.optional({ escape: true, trim: true }),
-    email1: schema.string({ escape: true, trim: true }, [
+    email1: schema.string({ trim: true }, [
       rules.email(),
       rules.unique({
         table: 'contacts',
@@ -22,10 +22,10 @@ export default class ContactValidator {
         whereNot: this.refs?.id ? { id: this.refs.id } : {},
       }),
     ]),
-    email2: schema.string.optional({ escape: true, trim: true }, [rules.email()]),
+    email2: schema.string.optional({ trim: true }, [rules.email()]),
     phoneNumber1: schema.string({ escape: true, trim: true }, [rules.maxLength(20)]),
     phoneNumber2: schema.string.optional({ escape: true, trim: true }, [rules.maxLength(20)]),
-    country: schema.string.optional({ escape: true, trim: true }, [rules.maxLength(20)]),
+    country: schema.string.optional({ escape: true, trim: true }, [rules.maxLength(25)]),
     streetAddressLine1: schema.string.optional({ escape: true, trim: true }),
     streetAddressLine2: schema.string.optional({ escape: true, trim: true }),
     city: schema.string.optional({ escape: true, trim: true }),
@@ -45,6 +45,10 @@ export default class ContactValidator {
       }),
     ]),
     notes: schema.string.optional({ escape: true, trim: true }),
+    profilePicture: schema.file.optional({
+      size: '500kb',
+      extnames: ['jpg', 'png', 'webp', 'gif'],
+    }),
   })
 
   public messages = {
@@ -62,6 +66,9 @@ export default class ContactValidator {
       'Phone Number 2 should be maximum of {{options.maxLength}} characters.',
     'country.maxLength': 'Country should be maximum of {{options.maxLength}} characters.',
     'birthday.before': "Birthday must be before 'today'",
+    'birthday.date.format': 'Please provide a valid birthday',
     'website.url': 'Website is not valid',
+    'profilePicture.size': 'Maximum profile picture size is 500kb',
+    'profilePicture.extnames': 'The uploaded file type is not allowed',
   }
 }

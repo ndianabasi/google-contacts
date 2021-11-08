@@ -2,6 +2,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Contact from 'App/Models/Contact'
 import Logger from '@ioc:Adonis/Core/Logger'
 import ContactValidator from 'App/Validators/ContactValidator'
+import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 
 export default class ContactsController {
   public async index({ request, response }: HttpContextContract) {
@@ -9,7 +10,16 @@ export default class ContactsController {
       const { page, perPage } = request.qs()
 
       const contacts = await Contact.query()
-        .select(['id', 'first_name', 'surname', 'email1', 'phone_number1', 'company', 'job_title'])
+        .select([
+          'id',
+          'first_name',
+          'surname',
+          'email1',
+          'phone_number1',
+          'company',
+          'job_title',
+          'profile_picture',
+        ])
         .orderBy('first_name', 'asc')
         .paginate(page, perPage)
 
@@ -58,6 +68,7 @@ export default class ContactsController {
         birthday,
         website,
         notes,
+        profilePicture,
       } = payload
 
       const contact = await Contact.create({
@@ -78,6 +89,7 @@ export default class ContactsController {
         birthday,
         website,
         notes,
+        profilePicture: profilePicture ? Attachment.fromFile(profilePicture) : null,
       })
 
       /**
@@ -133,6 +145,7 @@ export default class ContactsController {
         birthday,
         website,
         notes,
+        profilePicture,
       } = payload!
 
       requestedContact?.merge({
@@ -153,6 +166,7 @@ export default class ContactsController {
         birthday,
         website,
         notes,
+        profilePicture: profilePicture ? Attachment.fromFile(profilePicture) : null,
       })
 
       await requestedContact?.save()
