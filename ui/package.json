@@ -14,17 +14,17 @@
     "build:pwa": "quasar build -m pwa"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "^1.11.4",
     "@vuelidate/core": "^2.0.0-alpha.25",
     "@vuelidate/validators": "^2.0.0-alpha.21",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "quasar": "^2.0.0",
+    "quasar": "^2.2.3",
     "vuex": "^4.0.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
-    "@quasar/app": "^3.0.0",
+    "@quasar/app": "^3.1.9",
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",

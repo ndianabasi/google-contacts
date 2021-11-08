@@ -10,6 +10,7 @@ export default class ContactsController {
 
       const contacts = await Contact.query()
         .select(['id', 'first_name', 'surname', 'email1', 'phone_number1', 'company', 'job_title'])
+        .orderBy('first_name', 'asc')
         .paginate(page, perPage)
 
       return response.ok({ data: contacts })
@@ -86,7 +87,7 @@ export default class ContactsController {
        */
       await contact.refresh()
 
-      return response.created({ message: 'Contact was created', data: contact })
+      return response.created({ message: 'Contact was created', data: contact.id })
     } catch (error) {
       Logger.error('Error at ContactsController.store:\n%o', error)
 
@@ -157,7 +158,7 @@ export default class ContactsController {
       await requestedContact?.save()
       await requestedContact?.refresh()
 
-      return response.created({ message: 'Contact was edited', data: requestedContact })
+      return response.created({ message: 'Contact was edited', data: requestedContact?.id })
     } catch (error) {
       Logger.error('Error at ContactsController.update:\n%o', error)
 

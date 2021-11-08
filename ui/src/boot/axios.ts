@@ -61,7 +61,7 @@ export default boot(({ app, store }) => {
         });
       } else if (error?.response?.status === 422) {
         // Intercept validation errors
-        const validationErrors = error?.response?.data?.errors;
+        const validationErrors = error?.response?.data?.error?.messages?.errors;
         if (Array.isArray(validationErrors) && validationErrors.length) {
           const errorListItems: string[] = validationErrors.map(
             (err) => `<li>${err.message}</li>`
