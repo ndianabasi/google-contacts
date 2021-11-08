@@ -66,6 +66,7 @@ import {
 import { useQuasar } from "quasar";
 import useVuelidate from "@vuelidate/core";
 import { required, email, url, helpers, integer } from "@vuelidate/validators";
+import { useRouter } from "vue-router";
 import { FormInterface, Contact } from "../../types";
 import { useStore } from "../../store";
 
@@ -91,6 +92,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const $q = useQuasar();
+    const router = useRouter();
 
     const form: FormInterface = reactive({
       firstName: {
@@ -293,18 +295,27 @@ export default defineComponent({
       { flush: "pre" }
     );
 
-    const submitPayload = computed(() => {
-      const payload = {};
-      Object.keys(form).forEach((key) => {
-        Object.defineProperty(payload, key, {
-          value: form?.[key]?.value,
-          writable: false,
-        });
-      });
-      return payload;
-    });
+    const submitPayload = computed(() => ({
+      birthday: form.birthday.value,
+      city: form.city.value,
+      company: form.company.value,
+      country: form.country.value,
+      email1: form.email1.value,
+      email2: form.email2.value,
+      firstName: form.firstName.value,
+      jobTitle: form.jobTitle.value,
+      notes: form.notes.value,
+      phoneNumber1: form.phoneNumber1.value,
+      phoneNumber2: form.phoneNumber2.value,
+      postCode: form.postCode.value,
+      state: form.state.value,
+      streetAddressLine1: form.streetAddressLine1.value,
+      streetAddressLine2: form.streetAddressLine2.value,
+      surname: form.surname.value,
+      website: form.website.value,
+    }));
 
-    const submitForm = function () {
+    const submitForm = async function () {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       v$?.value?.$touch();
       if (v$?.value?.$error) {
@@ -317,10 +328,23 @@ export default defineComponent({
           type: "negative",
         });
       } else {
-        $q.notify({
-          message: props.editMode ? "Contact edited" : "Contact created",
-          type: "positive",
-        });
+        await store
+          .dispatch("contacts/CREATE_CONTACT", {
+            editMode: props.editMode,
+            payload: submitPayload.value,
+            contactId: props.contactId,
+          })
+          .then((contactId) => {
+            $q.notify({
+              message: props.editMode ? "Contact edited" : "Contact created",
+              type: "positive",
+            });
+
+            void router.push({
+              name: "view_contact",
+              params: { contactId },
+            });
+          });
       }
     };
 

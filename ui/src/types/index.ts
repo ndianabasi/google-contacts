@@ -95,7 +95,7 @@ export interface ResponseData {
   status?: number;
   statusText?: string;
   stack?: string;
-  data: Record<string, unknown>;
+  data: Record<string, unknown> & string;
   errors?: Array<{ rule: string; field: string; message: string }>;
 }
 
@@ -107,10 +107,6 @@ export interface HttpResponse extends AxiosResponse {
   headers: Record<string, string>;
 }
 
-export interface HttpError extends AxiosError {
-  response?: HttpResponse;
-}
-
 export interface PaginatedContact {
   id: string;
   first_name: string;
@@ -119,4 +115,18 @@ export interface PaginatedContact {
   phone_number1: string;
   company: string;
   job_title: string;
+}
+
+interface ValidationError {
+  data?: {
+    error?: {
+      messages?: {
+        errors?: Array<{ field: string; message: string; rule: string }>;
+      };
+    };
+  };
+}
+
+export interface HttpError extends AxiosError {
+  response?: HttpResponse & ValidationError;
 }
