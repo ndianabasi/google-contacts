@@ -20,21 +20,12 @@ import { ContactStateInterface } from "./contacts/state";
  * with the Store instance.
  */
 
-export interface AlertInterface {
-  type: string;
-  content: string;
-  status: number | null;
-  statusText: string;
-  activity: string;
-}
-
 export interface StateInterface {
   contacts?: ContactStateInterface;
 }
 
 export interface RootState {
   httpTimeout: number;
-  message: AlertInterface;
   apiPort: string;
   apiVersion: string | null;
   apiProtocol: string;
@@ -66,13 +57,6 @@ export default store((/* { ssrContext } */) => {
             ? "https://"
             : "http://",
         httpTimeout: process.env.NODE_ENV === "production" ? 60000 : 30000,
-        message: {
-          type: "",
-          content: "",
-          status: null,
-          statusText: "",
-          activity: "",
-        },
       };
     },
 
@@ -89,7 +73,6 @@ export default store((/* { ssrContext } */) => {
         baseURL: getters.getBaseURL as string,
         timeout: getters.getHttpTimeout as string,
       }),
-      getMessage: (state) => state.message,
     },
 
     modules: {
