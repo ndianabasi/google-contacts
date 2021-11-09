@@ -57,8 +57,6 @@ const actions: ActionTree<ContactStateInterface, StateInterface> = {
       contactId,
     }: { editMode: boolean; payload: FormData; contactId?: string }
   ): Promise<Contact["id"]> {
-    console.log(payload);
-
     return new Promise(async (resolve, reject) => {
       if (!editMode) {
         await api

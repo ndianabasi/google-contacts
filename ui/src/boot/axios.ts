@@ -23,10 +23,7 @@ export default boot(({ app, store }) => {
   api.interceptors.response.use(
     (response) => response,
     async (error: HttpError) => {
-      console.log(error.response);
       if (error?.response?.status === 400) {
-        console.log(error.response.data);
-
         Notify.create({
           message:
             error?.response?.data?.message ??
