@@ -85,6 +85,18 @@ const actions: ActionTree<ContactStateInterface, StateInterface> = {
       }
     });
   },
+
+  DELETE_CONTACT(ctx, contactId: string): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      await api
+        .delete(`/contacts/${contactId}`)
+        .then((response: HttpResponse) => {
+          const deletedContactId = response.data.data as Contact["id"];
+          return resolve(deletedContactId);
+        })
+        .catch((error) => reject(error));
+    });
+  },
 };
 
 export default actions;

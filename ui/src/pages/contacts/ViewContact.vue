@@ -75,7 +75,23 @@
         >
           <q-toolbar>
             <q-btn color="primary" flat round icon="star" />
-            <q-btn flat round icon="more_vert" />
+            <q-btn flat round ripple icon="more_vert" class="q-mr-1">
+              <q-menu anchor="bottom end" self="top end">
+                <q-list class="text-grey-8" style="min-width: 100px">
+                  <q-item
+                    v-close-popup
+                    clickable
+                    class="text-negative"
+                    @click="confirmDeletion"
+                  >
+                    <q-item-section avatar>
+                      <q-icon name="delete_outline" />
+                    </q-item-section>
+                    <q-item-section>Delete Contact</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
             <q-btn
               :to="{
                 name: 'edit_contact',
@@ -227,6 +243,8 @@ import {
   ComputedRef,
 } from "vue";
 
+import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
 import { EditedContactInterface } from "../../types";
 import { useStore } from "../../store";
 
@@ -241,6 +259,9 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+    const $q = useQuasar();
+    const router = useRouter();
+
     const currentContact = computed(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       () => store.getters["contacts/currentContact"] as EditedContactInterface
@@ -341,6 +362,43 @@ export default defineComponent({
       );
     };
 
+    const deleteContact = async function () {
+      await store
+        .dispatch("contacts/DELETE_CONTACT", props.contactId)
+        .then(() => {
+          $q.notify({
+            message: "Contact deleted",
+            type: "positive",
+          });
+
+          void router.push({
+            name: "home",
+          });
+        });
+    };
+
+    const confirmDeletion = function () {
+      $q.dialog({
+        title: "Confirm",
+        message: "Please confirm this deletion?",
+        cancel: {
+          textColor: "green-6",
+          flat: true,
+        },
+        ok: { textColor: "red-6", flat: true },
+        persistent: true,
+      })
+        .onOk(async () => {
+          await deleteContact();
+        })
+        .onCancel(() => {
+          $q.notify({
+            message: "Contact not deleted",
+            type: "positive",
+          });
+        });
+    };
+
     onBeforeUnmount(() => {
       void stopContactsEffect();
     });
@@ -352,6 +410,7 @@ export default defineComponent({
       jobDescription,
       isNullArray,
       profilePicture,
+      confirmDeletion,
     };
   },
 });
