@@ -47,7 +47,7 @@
             :label="label"
             :dense="dense"
             :class="!icon && 'q-pl-lg'"
-            accept=".jpg, png, webp, gif"
+            accept=".jpg, .png, .webp, .gif"
             :max-file-size="maxFileSize"
             @rejected="onRejectProfilePicture"
           >
