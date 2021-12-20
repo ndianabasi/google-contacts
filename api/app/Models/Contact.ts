@@ -1,7 +1,10 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, beforeCreate } from '@ioc:Adonis/Lucid/Orm'
 import { cuid } from '@ioc:Adonis/Core/Helpers'
-import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
+import {
+  responsiveAttachment,
+  ResponsiveAttachmentContract,
+} from '@ioc:Adonis/Addons/ResponsiveAttachment'
 
 export default class Contact extends BaseModel {
   public static selfAssignPrimaryKey = true // <-- Very important
@@ -60,13 +63,13 @@ export default class Contact extends BaseModel {
   @column()
   public notes?: string | null | undefined
 
-  @attachment({
+  @responsiveAttachment({
     disk: 'local',
-    folder: 'avatars',
-    preComputeUrl: true,
+    folder: 'avatars/contacts',
+    preComputeUrls: true,
     serializeAs: 'profilePicture',
   })
-  public profilePicture?: AttachmentContract | null
+  public profilePicture?: ResponsiveAttachmentContract | null
 
   @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
   public createdAt: DateTime

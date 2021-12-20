@@ -2,36 +2,36 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Contact from 'App/Models/Contact'
 import Logger from '@ioc:Adonis/Core/Logger'
 import ContactValidator from 'App/Validators/ContactValidator'
-import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
+import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 
 export default class ContactsController {
   public async index({ request, response }: HttpContextContract) {
-    try {
-      const { page, perPage } = request.qs()
+    /* try { */
+    const { page, perPage } = request.qs()
 
-      const contacts = await Contact.query()
-        .select([
-          'id',
-          'first_name',
-          'surname',
-          'email1',
-          'phone_number1',
-          'company',
-          'job_title',
-          'profile_picture',
-        ])
-        .orderBy('first_name', 'asc')
-        .paginate(page, perPage)
+    const contacts = await Contact.query()
+      .select([
+        'id',
+        'first_name',
+        'surname',
+        'email1',
+        'phone_number1',
+        'company',
+        'job_title',
+        'profile_picture',
+      ])
+      .orderBy('first_name', 'asc')
+      .paginate(page, perPage)
 
-      return response.ok({ data: contacts })
-    } catch (error) {
+    return response.ok({ data: contacts })
+    /* } catch (error) {
       Logger.error('Error at ContactsController.list:\n%o', error)
 
       return response.status(error?.status ?? 500).json({
         message: 'An error occurred while deleting the contact.',
         error: process.env.NODE_ENV !== 'production' ? error : null,
       })
-    }
+    } */
   }
 
   public async store({ request, response }: HttpContextContract) {
@@ -89,7 +89,7 @@ export default class ContactsController {
         birthday,
         website,
         notes,
-        profilePicture: profilePicture ? Attachment.fromFile(profilePicture) : null,
+        profilePicture: profilePicture ? await ResponsiveAttachment.fromFile(profilePicture) : null,
       })
 
       /**
@@ -166,7 +166,7 @@ export default class ContactsController {
         birthday,
         website,
         notes,
-        profilePicture: profilePicture ? Attachment.fromFile(profilePicture) : null,
+        profilePicture: profilePicture ? await ResponsiveAttachment.fromFile(profilePicture) : null,
       })
 
       await requestedContact?.save()

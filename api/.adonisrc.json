@@ -22,7 +22,8 @@
     "@adonisjs/core",
     "@adonisjs/lucid",
     "@adonisjs/auth",
-    "@adonisjs/attachment-lite"
+    "@adonisjs/attachment-lite",
+    "adonis-responsive-attachment"
   ],
   "aceProviders": [
     "@adonisjs/repl"
