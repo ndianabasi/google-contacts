@@ -835,12 +835,13 @@ adonis-preset-ts@^2.1.0:
   resolved "https://registry.yarnpkg.com/adonis-preset-ts/-/adonis-preset-ts-2.1.0.tgz#3fccdee1c82c574114dc089d8c76dddf5a223054"
   integrity sha512-cQH/NP250gOF9k3TTDhVsTOPSAvyH4MhKVZ4ryYiihA+vnP27sut1gVIrRas3Evl5d2wEgWVGI5DgdP/ZFSk0w==
 
-adonis-responsive-attachment@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/adonis-responsive-attachment/-/adonis-responsive-attachment-1.1.1.tgz#8b1c1626ffcd6292e268e9e3c8bc53829b87d4fb"
-  integrity sha512-9q0jIQnLb0Omb6UhNLEMn0XJEwcpwGZogLdgUk21lXzI5ifAjsOJARgbq2YwmV07rTKGnvIbEFuydkbEpcYX3g==
+adonis-responsive-attachment@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/adonis-responsive-attachment/-/adonis-responsive-attachment-1.2.0.tgz#28e2762c114c3344ed05307728fa05718198eadd"
+  integrity sha512-wUgz9Ky2QENBPkw+fDKzD9UYISjWqEPSv02NOyzZbFbQxzZg2VR4K/7yc+hvlU7PKC7qykD0wBtkkdc0+nKUsQ==
   dependencies:
     "@poppinss/utils" "^3.2.1"
+    detect-file-type "^0.2.8"
     lodash "^4.17.21"
     mysql "^2.18.1"
     sharp "^0.29.2"
@@ -1645,6 +1646,14 @@ destroy@^1.0.4, destroy@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/destroy/-/destroy-1.0.4.tgz#978857442c44749e4206613e37946205826abd80"
   integrity sha1-l4hXRCxEdJ5CBmE+N5RiBYJqvYA=
+
+detect-file-type@^0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/detect-file-type/-/detect-file-type-0.2.8.tgz#d493b0021539b3c82dab5e8ffe3d4e9c389bbf5c"
+  integrity sha512-7O8NJl3nx7cLT05lBkHWiY0c3iSNQlDuSM9Jb61buiiDSsBf69rQaMZ42q4HC4YWwf78M4fC710RLWtV8yFtNw==
+  dependencies:
+    iconv-lite "^0.5.1"
+    jschardet "^2.1.1"
 
 detect-indent@^6.0.0:
   version "6.1.0"
@@ -2539,6 +2548,13 @@ iconv-lite@0.4.24:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
+iconv-lite@^0.5.1:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.5.2.tgz#af6d628dccfb463b7364d97f715e4b74b8c8c2b8"
+  integrity sha512-kERHXvpSaB4aU3eANwidg79K8FlrN77m8G9V+0vOR3HYaRifrlwMEpT7ZBJqLSEIHnEgJTHcWK82wwLwwKwtag==
+  dependencies:
+    safer-buffer ">= 2.1.2 < 3"
+
 ieee754@^1.1.13, ieee754@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
@@ -2822,6 +2838,11 @@ js-yaml@^3.13.1:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+
+jschardet@^2.1.1:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-2.3.0.tgz#06e2636e16c8ada36feebbdc08aa34e6a9b3ff75"
+  integrity sha512-6I6xT7XN/7sBB7q8ObzKbmv5vN+blzLcboDE1BNEsEfmRXJValMxO6OIRT69ylPBRemS3rw6US+CMCar0OBc9g==
 
 json-buffer@3.0.1:
   version "3.0.1"
