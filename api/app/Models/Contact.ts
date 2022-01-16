@@ -68,6 +68,11 @@ export default class Contact extends BaseModel {
     folder: 'avatars/contacts',
     preComputeUrls: true,
     serializeAs: 'profilePicture',
+    keepOriginal: false,
+    breakpoints: {
+      medium: 'off',
+      large: 'off',
+    },
   })
   public profilePicture?: ResponsiveAttachmentContract | null
 

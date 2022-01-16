@@ -78,10 +78,14 @@ export interface EditedContactInterface {
   website?: string | null | undefined;
   notes?: string | null | undefined;
   profilePicture?: {
-    extname: string;
-    mimeType: string;
-    name: string;
-    url: string;
+    breakpoints: {
+      [key: string]: {
+        extname: string;
+        mimeType: string;
+        name: string;
+        url: string;
+      };
+    };
   };
 }
 

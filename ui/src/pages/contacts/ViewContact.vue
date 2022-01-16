@@ -284,9 +284,11 @@ export default defineComponent({
 
     const profilePicture = computed(() => {
       const rootURL = computed(() => store.getters.getRootURL);
-      return currentContact.value?.profilePicture
-        ? `${rootURL.value}${currentContact.value.profilePicture.url}`
-        : "";
+      return `${rootURL.value}${
+        currentContact?.value?.profilePicture?.breakpoints?.small?.url ??
+        currentContact?.value?.profilePicture?.breakpoints?.thumbnail?.url ??
+        ""
+      }`;
     });
 
     const contactData: ComputedRef<ContactData> = computed(() => [

@@ -265,7 +265,13 @@ export default defineComponent({
       formatProfilePicture: (
         profilePicture: EditedContactInterface["profilePicture"]
       ): string =>
-        profilePicture ? `${rootURL.value}${profilePicture.url}` : "",
+        profilePicture
+          ? `${rootURL.value}${
+              profilePicture?.breakpoints?.small?.url ??
+              profilePicture?.breakpoints?.thumbnail?.url ??
+              ""
+            }`
+          : "",
     };
   },
 });
