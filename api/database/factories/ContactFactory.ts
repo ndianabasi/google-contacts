@@ -3,7 +3,7 @@ import Factory from '@ioc:Adonis/Lucid/Factory'
 import { DateTime } from 'luxon'
 
 const ContactFactory = Factory.define(Contact, ({ faker }) => {
-  const firstName = faker.name.firstName(faker.random.arrayElement([0, 1]))
+  const firstName = faker.name.firstName(faker.helpers.arrayElement(['male', 'female']))
   const surname = faker.name.lastName()
   const omitAddresses = faker.datatype.boolean()
 
@@ -20,10 +20,10 @@ const ContactFactory = Factory.define(Contact, ({ faker }) => {
       const omit = faker.datatype.boolean()
       return omit ? null : `${firstName}.${surname}@${faker.internet.domainName()}`
     })(),
-    phoneNumber1: faker.phone.phoneNumber(),
+    phoneNumber1: faker.phone.number(),
     phoneNumber2: (() => {
       const omit = faker.datatype.boolean()
-      return omit ? null : faker.phone.phoneNumber()
+      return omit ? null : faker.phone.number()
     })(),
     country: faker.address.country(),
     state: omitAddresses ? null : faker.address.state(),
@@ -40,7 +40,7 @@ const ContactFactory = Factory.define(Contact, ({ faker }) => {
     })(),
     notes: (() => {
       const omit = faker.datatype.boolean()
-      return omit ? null : faker.lorem.paragraphs(faker.random.arrayElement([1, 2]))
+      return omit ? null : faker.lorem.paragraphs(faker.helpers.arrayElement([1, 2]))
     })(),
   }
 }).build()
