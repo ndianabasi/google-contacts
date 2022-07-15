@@ -364,7 +364,7 @@ export default defineComponent({
       );
     };
 
-    const deleteContact = async function () {
+    const deleteContact = async () => {
       await store
         .dispatch("contacts/DELETE_CONTACT", props.contactId)
         .then(() => {
@@ -390,8 +390,8 @@ export default defineComponent({
         ok: { textColor: "red-6", flat: true },
         persistent: true,
       })
-        .onOk(async () => {
-          await deleteContact();
+        .onOk(() => {
+          void deleteContact();
         })
         .onCancel(() => {
           $q.notify({
