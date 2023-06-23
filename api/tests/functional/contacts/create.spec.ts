@@ -19,4 +19,28 @@ test.group('Contacts | create contact', (group) => {
       data: omit(contactAttributes.serialize(), 'id', 'created_at', 'updated_at'),
     })
   })
+
+  test('should throw 422 error if duplicate "email1" to be created', async ({ client, route }) => {
+    const contact = await ContactFactory.merge({ email1: 'ndianabasi@me.com' }).create()
+
+    const response = await client.post(route('ContactsController.store')).json(contact)
+
+    response.assertStatus(422)
+    response.assertBodyContains({
+      errors: [{ message: 'Email 1 is already registered in your contacts' }],
+    })
+  })
+
+  test('should throw 422 error if duplicate "email1" to be created')
+    .with(['ndianabasi@me.com', 'NDIANABASI@ME.COM'])
+    .run(async ({ client, route }, email) => {
+      const contact = await ContactFactory.merge({ email1: email }).create()
+
+      const response = await client.post(route('ContactsController.store')).json(contact)
+
+      response.assertStatus(422)
+      response.assertBodyContains({
+        errors: [{ message: 'Email 1 is already registered in your contacts' }],
+      })
+    })
 })
