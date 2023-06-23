@@ -3,45 +3,27 @@ import Factory from '@ioc:Adonis/Lucid/Factory'
 import { DateTime } from 'luxon'
 
 const ContactFactory = Factory.define(Contact, ({ faker }) => {
-  const firstName = faker.name.firstName(faker.helpers.arrayElement(['male', 'female']))
-  const surname = faker.name.lastName()
+  const firstName = faker.person.firstName(faker.helpers.arrayElement(['male', 'female']))
+  const surname = faker.person.lastName()
   const omitAddresses = faker.datatype.boolean()
 
   return {
     firstName,
     surname,
     company: faker.company.name(),
-    jobTitle: (() => {
-      const omit = faker.datatype.boolean()
-      return omit ? null : faker.name.jobTitle()
-    })(),
-    email1: faker.internet.email(firstName, surname),
-    email2: (() => {
-      const omit = faker.datatype.boolean()
-      return omit ? null : `${firstName}.${surname}@${faker.internet.domainName()}`
-    })(),
+    jobTitle: faker.person.jobTitle(),
+    email1: faker.internet.email({ firstName, lastName: surname }),
+    email2: `${firstName}.${surname}@${faker.internet.domainName()}`,
     phoneNumber1: faker.phone.number(),
-    phoneNumber2: (() => {
-      const omit = faker.datatype.boolean()
-      return omit ? null : faker.phone.number()
-    })(),
-    country: faker.address.country(),
-    state: omitAddresses ? null : faker.address.state(),
-    streetAddressLine1: omitAddresses ? null : faker.address.streetAddress(),
-    streetAddressLine2: omitAddresses ? null : faker.address.streetAddress(),
-    postCode: omitAddresses ? null : faker.address.zipCode(),
-    birthday: (() => {
-      const omit = faker.datatype.boolean()
-      return omit ? null : DateTime.fromJSDate(faker.date.past())
-    })(),
-    website: (() => {
-      const omit = faker.datatype.boolean()
-      return omit ? null : `https://${faker.internet.domainName()}`
-    })(),
-    notes: (() => {
-      const omit = faker.datatype.boolean()
-      return omit ? null : faker.lorem.paragraphs(faker.helpers.arrayElement([1, 2]))
-    })(),
+    phoneNumber2: faker.phone.number(),
+    country: faker.location.country(),
+    state: omitAddresses ? null : faker.location.state(),
+    streetAddressLine1: omitAddresses ? null : faker.location.streetAddress(),
+    streetAddressLine2: omitAddresses ? null : faker.location.streetAddress(),
+    postCode: omitAddresses ? null : faker.location.zipCode(),
+    birthday: DateTime.fromJSDate(faker.date.past()),
+    website: `https://${faker.internet.domainName()}`,
+    notes: faker.lorem.paragraphs(faker.helpers.arrayElement([1, 2])),
   }
 }).build()
 

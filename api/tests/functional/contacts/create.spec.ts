@@ -1,16 +1,22 @@
 import Database from '@ioc:Adonis/Lucid/Database'
 import { test } from '@japa/runner'
+import { ContactFactory } from 'Database/factories'
+import omit from 'lodash.omit'
 
-test.group('Creative-Group Creative | Mass-Format Creatives | Update', (group) => {
+test.group('Contacts | create contact', (group) => {
   group.each.setup(async () => {
     await Database.beginGlobalTransaction()
     return () => Database.rollbackGlobalTransaction()
   })
 
-  test('should create contact', async ({ client }) => {
-    const response = await client.get('/')
+  test('should create contact', async ({ client, route }) => {
+    const contactAttributes = await ContactFactory.make()
 
-    response.assertStatus(200)
-    response.assertBody({ hello: 'world' })
+    const response = await client.post(route('ContactsController.store')).json(contactAttributes)
+
+    response.assertStatus(201)
+    response.assertBodyContains({
+      data: omit(contactAttributes.serialize(), 'id', 'created_at', 'updated_at'),
+    })
   })
 })
