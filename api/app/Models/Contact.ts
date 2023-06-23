@@ -12,74 +12,73 @@ export default class Contact extends BaseModel {
   @column({ isPrimary: true })
   public id: string
 
-  @column({ serializeAs: 'firstName' })
+  @column()
   public firstName: string
 
   @column()
   public surname: string
 
   @column()
-  public company?: string | null | undefined
+  public company: string | null
 
-  @column({ serializeAs: 'jobTitle' })
-  public jobTitle?: string | null | undefined
+  @column()
+  public jobTitle: string | null
 
   @column()
   public email1: string
 
   @column()
-  public email2?: string | null | undefined
+  public email2: string | null
 
-  @column({ serializeAs: 'phoneNumber1' })
+  @column()
   public phoneNumber1: string
 
-  @column({ serializeAs: 'phoneNumber2' })
-  public phoneNumber2?: string | null | undefined
+  @column()
+  public phoneNumber2: string | null
 
   @column()
-  public country?: string | null | undefined
-
-  @column({ serializeAs: 'streetAddressLine1' })
-  public streetAddressLine1?: string | null | undefined
-
-  @column({ serializeAs: 'streetAddressLine2' })
-  public streetAddressLine2?: string | null | undefined
+  public country: string | null
 
   @column()
-  public city?: string | null | undefined
-
-  @column({ serializeAs: 'postCode' })
-  public postCode?: string | null | undefined
+  public streetAddressLine1: string | null
 
   @column()
-  public state?: string | null | undefined
+  public streetAddressLine2: string | null
+
+  @column()
+  public city: string | null
+
+  @column()
+  public postCode: string | null
+
+  @column()
+  public state: string | null
 
   @column.date({ autoCreate: false, autoUpdate: false })
-  public birthday?: DateTime | null | undefined
+  public birthday: DateTime | null
 
   @column()
-  public website?: string | null | undefined
+  public website: string | null
 
   @column()
-  public notes?: string | null | undefined
+  public notes: string | null
 
   @responsiveAttachment({
     disk: 'local',
     folder: 'avatars/contacts',
     preComputeUrls: true,
-    serializeAs: 'profilePicture',
     keepOriginal: false,
     breakpoints: {
       medium: 'off',
       large: 'off',
     },
   })
-  public profilePicture?: ResponsiveAttachmentContract | null
+  public profilePicture: ResponsiveAttachmentContract | null
 
-  @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
+  @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: 'updatedAt' })
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
   @beforeCreate()

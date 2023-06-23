@@ -10,7 +10,7 @@ const ContactFactory = Factory.define(Contact, ({ faker }) => {
   return {
     firstName,
     surname,
-    company: faker.company.companyName(),
+    company: faker.company.name(),
     jobTitle: (() => {
       const omit = faker.datatype.boolean()
       return omit ? null : faker.name.jobTitle()
