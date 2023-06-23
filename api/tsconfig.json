@@ -31,7 +31,8 @@
       "@adonisjs/lucid",
       "@adonisjs/auth",
       "@adonisjs/attachment-lite",
-      "adonis-responsive-attachment"
+      "adonis-responsive-attachment",
+      "@japa/preset-adonis/build/adonis-typings"
     ]
   }
 }
